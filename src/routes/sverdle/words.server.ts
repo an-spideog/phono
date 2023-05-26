@@ -1881,7 +1881,7 @@ export const words = [
 	'spoke',
 	'spoof',
 	'spook',
-	'spool',
+	'reel',
 	'spoon',
 	'spore',
 	'sport',

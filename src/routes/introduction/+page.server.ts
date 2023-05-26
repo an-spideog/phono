@@ -17,7 +17,7 @@ let results = await con.query('SELECT * FROM spools')
 
 export function load() {
     return {
-        spools: results
+        reels: results
     };
 }
 
