@@ -24,6 +24,7 @@
 	"type": "module",
 	"dependencies": {
 		"mssql": "^9.1.1",
-		"mysql2": "^3.3.2"
+		"mysql2": "^3.3.2",
+		"xml-js": "^1.6.11"
 	}
 }
