@@ -1,24 +1,22 @@
 <script lang="ts">
+    import { afterNavigate } from '$app/navigation';
     import { Collector } from '$lib/types';
     export let data;
-    let collectors: Collector[] = data.collectorsJson.map(json => new Collector(json));
+    console.log(`Client side data: ${data.collectorsJson}`);
+    let collectors: Collector[];
+    $: collectors = data.collectorsJson.map(json => new Collector(json));
+    $: page = data.page;
 </script>
 
 <h1> Bailitheoirí </h1>
 <!--Search Bar Here -->
-<form class="search">
-    <div class="formline">
-        <label for="srchText"><span class="cga">Téacs</span></label>
-        <input class="textbox" id="srchText" name="Text" value="" />
-    </div>
-    <div class="formline">
-        <label for="srchID">ID</label>
-        <input class="textbox" id="srchID" name="ID" value="" />
-    </div>
-    <div class="submitline">
-        <input class="submit" type="submit" value="»" />
-    </div>
+<form>
+    ID: <input name="id" autocomplete="off"/>
+    Téacs: <input name="text" autocomplete="off"/>
+    <input type="submit" value="Submit"/> 
 </form>
+
+<span>Líon na mbailitheoirí: {collectors.length}</span>
 
 {#each collectors as collector}
     <div class="summary-box">
@@ -30,3 +28,6 @@
     </div>
     <a href="/reels">reels</a>
 {/each}
+
+<a href='?page={page-1}'>prev</a>
+<a href='?page={page+1}'>next</a>
