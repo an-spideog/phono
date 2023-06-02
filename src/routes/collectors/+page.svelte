@@ -6,17 +6,18 @@
     let collectors: Collector[];
     $: collectors = data.collectorsJson.map(json => new Collector(json));
     $: page = data.page;
+    $: collectorsCount = data.collectorsCount;
+    const MAX_PER_PAGE = 10;
 </script>
 
 <h1> Bailitheoirí </h1>
-<!--Search Bar Here -->
 <form>
     ID: <input name="id" autocomplete="off"/>
     Téacs: <input name="text" autocomplete="off"/>
     <input type="submit" value="Submit"/> 
 </form>
 
-<span>Líon na mbailitheoirí: {collectors.length}</span>
+<span>Líon na mbailitheoirí: {collectorsCount}</span>
 
 {#each collectors as collector}
     <div class="summary-box">
@@ -29,5 +30,10 @@
     <a href="/reels">reels</a>
 {/each}
 
-<a href='?page={page-1}'>prev</a>
+{#if page > 1}
+<a href='?page={page-1}' >prev</a>
+{/if}
+
+{#if page < Math.ceil(collectorsCount / MAX_PER_PAGE) }
 <a href='?page={page+1}'>next</a>
+{/if}
