@@ -1,24 +1,24 @@
 import { page } from '$app/stores';
-import { getCollectorPageCount, getCollectorsJson } from '$lib/server/db';
+import { getCollectorCount, getCollectors } from '$lib/server/db';
+import type { ElementCompact } from 'xml-js';
 
 export const load = async ( {url} ) => {
-    let pageCount = await getCollectorPageCount();
-    console.log('page count: ' + pageCount);
-    let page = Number(url.searchParams.get('page'));
-    if (page <= 0) {
+    let id = url.searchParams.get('id');
+    let text = url.searchParams.get('text');
+    let count = await getCollectorCount();
+    let page = Number(url.searchParams.get('page') ?? 1);
+
+    if (page < 1) {
         page = 1;
-    }
-    if (page > pageCount) {
-        page = pageCount;
-    }
+    } 
+    // check max
+
     console.log('Page: ' + page);
-    let collectorsObject = await getCollectorsJson(Number(url.searchParams.get('id')), url.searchParams.get('text') ?? undefined, page);
-    let collectorsCount = collectorsObject?.count;
-    console.log(collectorsCount);
-    let collectorsJson = collectorsObject?.json;
+    let jsons: ElementCompact[] = await getCollectors(page, text ?? '', id ?? '');
+    console.log(jsons);
     return {
-        collectorsJson: (collectorsJson ?? []),
+        collectorsJson: (jsons ?? []),
         page: page ?? 1,
-        collectorsCount: collectorsCount ?? 0
+        collectorsCount: count
     }
 }

@@ -13,95 +13,64 @@ const settings: sql.config = {
     }
 }
 
-
-async function query(q: string) {
-    try {
-        let poolConnection = await sql.connect(settings);
-        let response = await poolConnection.request().query(q);
-        return response.recordset
-        } catch (err: any) {
-            console.error(err.message);
-            return null;
-        }
-}
-
-/* TODO: use Parameterised Queries to prevent against SQL injections */
-async function get(table: string, where?: string, page?: number) {
-    let xmls: string[] = [];
-    let json: ElementCompact[] = [];
-        try {
-            let poolConnection = await sql.connect(settings);
-            let queryText = `
-                SELECT * FROM ${table} ${where ? `WHERE ${where}` : ``}
-                ORDER BY ID OFFSET ${( (page??1)-1 ) * (MAX_PER_PAGE)} ROWS 
-                FETCH NEXT ${MAX_PER_PAGE} ROWS ONLY
-            `;
-            console.log(queryText);
-            let results = await query(queryText);
-            if (results) {
-                xmls = results.map(x => x.Details);
-                json = xmls.map(xml => toJson(xml));
-            }
-
-            let countQueryText = `SELECT COUNT(ID) FROM ${table} ${where ? `WHERE ${where}` : ``}`
-            let countResult = await query(countQueryText);
-            let count: number;
-            if (countResult) {
-                count = countResult[0][''];
-            } else {
-                count = 0;
-            }
-
-            return {
-                json: json, 
-                count: count
-            }
-
-        } catch (err: any) {
-            console.error(err.message);
-            return null;
-        }
-}
-
 const MAX_PER_PAGE = 10;
+const pool = await sql.connect(settings);
 
-export async function getCollectorPageCount() {
-    let collectorCountObject = await query(`SELECT COUNT(ID) FROM dbo.tblFCollectors`)
-    let collectorCount: number;
-    if (collectorCountObject) {
-        collectorCount = collectorCountObject[0][''];
-    } else {
-       collectorCount = 0;
-    }
-    return Math.ceil((collectorCount ?? 0) / MAX_PER_PAGE);
-}
+export async function getCollectorCount(text?: string, id?: number) {
+    const ps = new sql.PreparedStatement(pool);
 
-export async function getCollectorsJson(id?: number, text?: string, page?: number) {
-    if (id && text) {
-        return await get('dbo.tblFCollectors', `ID=${id} AND Details.value('(/collector/name)[1]', 'nvarchar(max)') LIKE '%${text}%'`, page)
-    }
-
+    let countText = `SELECT COUNT(ID) FROM dbo.tblFCollectors WHERE 1=1`;
     if (text) {
-        return await get('dbo.tblFCollectors', `Details.value('(/collector/name)[1]', 'nvarchar(max)') LIKE '%${text}%'`, page)
+        countText += ` AND Details.value('(/collector/name)[1]', 'nvarchar(max)') LIKE '%' + @text + '%'`;
+        ps.input('text', sql.VarChar(sql.MAX));
     }
-
     if (id) {
-        return await get('dbo.tblFCollectors', `ID=${id}`, page);
+        countText += ` AND ID like @id`;
+        ps.input('id', sql.Int);
     }
+    let queryText = countText + ' ' + countText;
 
-    return await get('dbo.tblFCollectors', undefined, page);
+    await ps.prepare(queryText);
+    let executed: any = await ps.execute({text: text ?? '', id: id ?? 0});
+    await ps.unprepare();
+    
+    // TODO: I'd rather not use so many any's here 
+    let total = executed.recordsets[0][0][''];
+    console.log('executed.recordset:');
+    console.log(executed.recordset);
+    return total;
 }
 
-export async function getSpeakersJson() {
-    return await get('dbo.tblFSpeakers');
-}
+export async function getCollectors(page: number, text?: string, id?: string) {
+    let offset = (page-1) * MAX_PER_PAGE;
+    console.log(`page: ${page}, text: ${text}, number: ${id}`);
+    const ps = new sql.PreparedStatement(pool);
 
-export async function getReelsJson() {
-    return await get('dbo.tblFSpools');
-}
+    let filterText = `SELECT * FROM dbo.tblFCollectors WHERE 1=1`;
+    if (text) {
+        filterText += ` AND Details.value('(/collector/name)[1]', 'nvarchar(max)') LIKE '%' + @text + '%'`;
+        ps.input('text', sql.VarChar(sql.MAX));
+    }
+    if (id) {
+        filterText += ` AND ID like @id`;
+        ps.input('id', sql.Int);
+    }
+    filterText += ` ORDER BY ID OFFSET @offset ROWS FETCH NEXT @maxPerPage ROWS ONLY;`;
+    let queryText = filterText;
+    console.log(queryText);
 
-export async function getTracksJson() {
-    return await get('dbo.tblFTracks');
+    ps.input('offset', sql.Int);
+    ps.input('maxPerPage', sql.Int);
+
+    await ps.prepare(queryText);
+    let executed: any = await ps.execute({offset: offset, maxPerPage: MAX_PER_PAGE, text: text ?? '', id: id ?? 0});
+    console.log("Executed: ");
+    console.log(executed);
+    await ps.unprepare();
+    
+    // TODO: I'd rather not use so many any's here 
+    let jsons = executed.recordset.map((xml: any) => toJson(xml.Details)); 
+    return jsons;
 }
 
 function toJson(xml: string) {

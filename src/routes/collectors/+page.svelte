@@ -11,7 +11,7 @@
 </script>
 
 <h1> Bailitheoirí </h1>
-<form>
+<form data-sveltekit-preload-data>
     ID: <input name="id" autocomplete="off"/>
     Téacs: <input name="text" autocomplete="off"/>
     <input type="submit" value="Submit"/> 
