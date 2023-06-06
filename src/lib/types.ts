@@ -1,18 +1,12 @@
-/* 
- * Does it make sense to have constructors here? do I need constructors in the first place? 
- * if not, we can remove them later, and use interfaces instead, but I think we may need them? 
- */
-
-interface Keyed {
-    [key: string]: any
-}
+// The type of returned js objects from xml-js
+import type { ElementCompact } from "xml-js"; 
 
 export class Collector {
     id: number;
     firstName: string;
     lastName: string;
 
-    constructor(json: Keyed) {
+    constructor(json: ElementCompact) {
         if (json.collector) {
             this.id = json.collector._attributes.id;
             this.firstName = json.collector.name.firstname._text;
@@ -29,7 +23,7 @@ export class Speaker {
     firstName: string;
     lastName: string;
 
-    constructor(json: Keyed) {
+    constructor(json: ElementCompact) {
         if (json.speaker) {
             this.id = json.speaker._attributes.id;
             this.gender = json.speaker._attributes.gender;
@@ -49,7 +43,7 @@ export class Reel {
     collectors: number[];
     note: string;
 
-    constructor(json: Keyed) {
+    constructor(json: ElementCompact) {
         if (json.spool) {
             this.id = json.spool._attributes.id;
             this.title = json.spool.title._text;
@@ -58,14 +52,9 @@ export class Reel {
             this.collectors = getAttributeOrMap(json.spool.collectors.collector, "collectorID");
             this.note = json.spool.note._text;
         } else {
-            throw("json not of Speaker");
+            throw("json not of Reel");
         }
     }
-}
-
-let test = {
-    id: 5,
-    primary: false,
 }
 
 export class Track {
@@ -77,7 +66,7 @@ export class Track {
     speakers: [{id: number, primary: boolean}];
     languages: string[];
     reels: number[];
-    constructor(json: Keyed) {
+    constructor(json: ElementCompact) {
         if (json.track) {
             this.id = json.track._attributes.id;
             this.nickname = json.track._attributes.nickname;
@@ -93,9 +82,10 @@ export class Track {
     }
 }
 
+/* The SQL response either responds with one element or a list of elements so this handles both of those cases */
 function getAttributeOrMap(json: any, attribute: string) {
     if (Array.isArray(json)) {
-        return json.map((a: Keyed) => a._attributes[attribute]);
+        return json.map((a: any) => a._attributes[attribute]);
     } else {
         return [] + json._attributes[attribute];
     }

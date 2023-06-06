@@ -13,6 +13,7 @@ const settings: sql.config = {
     }
 }
 
+
 async function query(q: string) {
     try {
         let poolConnection = await sql.connect(settings);
@@ -24,6 +25,7 @@ async function query(q: string) {
         }
 }
 
+/* TODO: use Parameterised Queries to prevent against SQL injections */
 async function get(table: string, where?: string, page?: number) {
     let xmls: string[] = [];
     let json: ElementCompact[] = [];
@@ -75,7 +77,6 @@ export async function getCollectorPageCount() {
 }
 
 export async function getCollectorsJson(id?: number, text?: string, page?: number) {
-    id
     if (id && text) {
         return await get('dbo.tblFCollectors', `ID=${id} AND Details.value('(/collector/name)[1]', 'nvarchar(max)') LIKE '%${text}%'`, page)
     }
@@ -106,4 +107,3 @@ export async function getTracksJson() {
 function toJson(xml: string) {
     return xml2js(xml, {compact: true, nativeType: true}) as ElementCompact;
 }
-
