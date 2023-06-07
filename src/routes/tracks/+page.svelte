@@ -1,42 +1,46 @@
 <script lang="ts">
-    interface Track {
-            id: number,
-            nickname: string,
-            catalogueEntry: string,
-            places: number[],
-            recordingDate: string,
-            speakers: number[],
-            languages: string[],
-            reels: number[],
-    }
-
-    let tracks: Track[] = [
-        {id: 1, nickname: '1a1', catalogueEntry: "", places: [132329], recordingDate: '1961-03', speakers: [1], languages: [], reels: [1]},
-        {id: 2, nickname: '1b1', catalogueEntry: "", places: [132329], recordingDate: '1961-03', speakers: [1, 2], languages: [], reels: [1]},
-        {id: 3, nickname: '2a1', catalogueEntry: "", places: [132329], recordingDate: '1962-09-06', speakers: [1], languages: [], reels: [2]},
-    ];
-
+    import { Track } from '$lib/types';
+    export let data;
+    console.log(`Client side data: ${data.tracksJson}`);
+    let tracks: Track[];
+    $: tracks = data.tracksJson.map(json => new Track(json));
+    $: page = data.page;
+    $: trackCount = data.trackCount;
+    const MAX_PER_PAGE = 10;
 </script>
-<h1> Traiceanna </h1>
-<!--Search Bar Here -->
 
+<h1> Traiceanna </h1>
+<form data-sveltekit-preload-data>
+    ID: <input name="id" autocomplete="off"/>
+    Téacs: <input name="text" autocomplete="off"/>
+    <input type="submit" value="Submit"/> 
+</form>
+
+<span>Líon na dtraiceanna: {trackCount}</span>
+
+<!--TODO: Make a component out of these display boxes so I can handle optional fields more simply-->
 {#each tracks as track}
-    <!--Proof of concept filtering-->
-    {#if track.speakers.includes(2)}
     <div class="summary-box">
-        <h2>{track.id.toString() + " [" + track.nickname + "] "}</h2>
+        <h2>{track.catalogueEntry}</h2>
         <ul>
-            <li>áit: <a href={"https://logainm.ie/" + track.places[0]}>#{track.places[0]}</a></li>
-            <li>dáta taifeadta: {track.recordingDate}</li>
-            <li>cainteoir: {track.speakers}</li>
-            <li>spól: {track.reels}</li>
+            <li>id : {track.id} </li>
+            <li> leasainm : {track.nickname}</li>
+            <li>áiteanna : {track.places}</li>
+            <li>cainteoirí : {track.speakers}</li>
+            <li> dáta taifeadta : {track.recordingDate}</li>
+            <li>reels : {track.reels}</li>
         </ul>
-        <span>comhad fuaime ar fáil d'úsáideoirí cláraithe</span>
+        comhad fuaime ar fáil d'úsáideoirí cláraithe
     </div>
-    {:else}
-    <div class="empty"></div>
-    {/if}
 {/each}
+
+{#if page > 1}
+<a href='?page={page-1}' >prev</a>
+{/if}
+
+{#if page < Math.ceil(trackCount / MAX_PER_PAGE) }
+<a href='?page={page+1}'>next</a>
+{/if}
 
 <style>
 .summary-box {

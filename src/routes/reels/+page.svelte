@@ -1,41 +1,45 @@
 <script lang="ts">
-    interface Reel {
-        id: number,
-        title: string,
-        refId: number,
-        dates: string,
-        collectors: number[],
-        note: string,
-    }
-
-    
-
-    
-
-    let reels: Reel[] = [
-        {id: 1, title: "Cuntais ar Logainmneacha i bParóiste Chairlinn, Co. Lú", refId: 1, dates: "1961", collectors: [1, 2], note: "3 3/4 ips"},
-        {id: 2, title: "Cuntais ar Logainmneacha i bParóiste Chairlinn, Co. Lú", refId: 2, dates: "1962", collectors: [1], note: "1 7/8 ips"},
-        {id: 3, title: "Cuntais ar Logainmneacha i mBarúntacht na nDéise laistigh den Drom, Co. Phort Láirge", refId: 3, dates: "1962", collectors: [1, 3], note: "1 7/8 ips"},
-    ];
-
+    import { Reel } from '$lib/types';
+    export let data;
+    console.log(`Client side data: ${data.reelsJson}`);
+    let reels: Reel[];
+    $: reels = data.reelsJson.map(json => new Reel(json));
+    $: page = data.page;
+    $: reelCount = data.reelCount;
+    const MAX_PER_PAGE = 10;
 </script>
-<h1> Spóileanna </h1>
 
-<!--Search Bar Here -->
+<h1> Cainteoirí </h1>
+<form data-sveltekit-preload-data>
+    ID: <input name="id" autocomplete="off"/>
+    Téacs: <input name="text" autocomplete="off"/>
+    <input type="submit" value="Submit"/> 
+</form>
 
+<span>Líon na spóileanna: {reelCount}</span>
+
+<!--TODO: Make a component out of these display boxes so I can handle optional fields more simply-->
 {#each reels as reel}
-<div class="summary-box">
-    <h2>{reel.id.toString() + " [" + reel.title + "] "}</h2>
-    <ul>
-        <li>teideal: {reel.title}</li>
-        <li>uimhir thagartha: {reel.refId}</li>
-        <li>dáta cruthaithe: {reel.dates}</li>
-        <li>bailitheoir: {reel.collectors}</li>
-        <li>nóta: {reel.note}</li>
-    </ul>
-    <a href="/tracks">tracks</a>
-</div>
+    <div class="summary-box">
+        <h2>{reel.title}</h2>
+        <ul>
+            <li>teideal: {reel.title}</li>
+            <li>uimhir tagartha: {reel.refId}</li>
+            <li>dáta cruthaithe: {reel.date}</li>
+            <li>bailitheoir: TODO</li>
+            <li>nóta: {reel.note}</li>
+        </ul>
+        <a href="/tracks?reel={reel.id}">traiceanna</a>
+    </div>
 {/each}
+
+{#if page > 1}
+<a href='?page={page-1}' >prev</a>
+{/if}
+
+{#if page < Math.ceil(reelCount / MAX_PER_PAGE) }
+<a href='?page={page+1}'>next</a>
+{/if}
 
 <style>
 .summary-box {

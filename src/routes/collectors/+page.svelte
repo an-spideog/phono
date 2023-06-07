@@ -26,8 +26,8 @@
             <li>céad ainm : {collector.firstName}</li>
             <li>sloinne : {collector.lastName}</li>
         </ul>
+        <a href="/reels?collector={collector.id}">spóil</a>
     </div>
-    <a href="/reels">reels</a>
 {/each}
 
 {#if page > 1}
@@ -37,3 +37,9 @@
 {#if page < Math.ceil(collectorsCount / MAX_PER_PAGE) }
 <a href='?page={page+1}'>next</a>
 {/if}
+
+<style>
+.summary-box {
+    border-bottom: 1px solid orangered;
+}
+</style>

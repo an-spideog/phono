@@ -20,15 +20,30 @@ export class Collector {
 export class Speaker {
     id: number;
     gender: string;
-    firstName: string;
-    lastName: string;
+    fullName: string;
+
+    firstName?: string;
+    lastName?: string;
+    age?: string;
+    birthDate?: string;
+    occupation?: string;
+    languageAbility?: string;
+    remark?: string;
 
     constructor(json: ElementCompact) {
         if (json.speaker) {
-            this.id = json.speaker._attributes.id;
-            this.gender = json.speaker._attributes.gender;
-            this.firstName = json.speaker.name.firstname._text;
-            this.lastName = json.speaker.name.surname._text;
+            let j = json.speaker;
+            this.id = j._attributes.id;
+            this.gender = j._attributes.gender;
+            this.fullName = j.name.fullname._text;
+
+            this.firstName = j.name?.firstname?._text;
+            this.lastName = j.name?.surname?._text;
+            this.age = j.lifetime?.age?._text;
+            this.birthDate = j.lifetime?.birthdate?._text;
+            this.occupation = j.occupation?._text;
+            this.languageAbility = j.langability?._text;
+            this.remark = j.remark?._text;
         } else {
             throw("json not of Speaker");
         }
@@ -40,17 +55,17 @@ export class Reel {
     title: string;
     refId: number;
     date: string; 
-    collectors: number[];
-    note: string;
+    collectors?: number[];
+    note?: string;
 
     constructor(json: ElementCompact) {
         if (json.spool) {
             this.id = json.spool._attributes.id;
-            this.title = json.spool.title._text;
+            this.title = json.spool.title._text ?? '';
             this.refId = json.spool.refID._text;
             this.date = json.spool.dates.date._text;
-            this.collectors = getAttributeOrMap(json.spool.collectors.collector, "collectorID");
-            this.note = json.spool.note._text;
+            //this.collectors = getAttributeOrMap(json.spool.collectors.collector, "collectorID");
+            this.note = json?.spool?.note?._text ?? '';
         } else {
             throw("json not of Reel");
         }
@@ -64,8 +79,8 @@ export class Track {
     places: number[];
     recordingDate: string;
     speakers: [{id: number, primary: boolean}];
-    languages: string[];
     reels: number[];
+    //languages?: string[]; Not sure if this property is used at all in the original site
     constructor(json: ElementCompact) {
         if (json.track) {
             this.id = json.track._attributes.id;
@@ -74,8 +89,8 @@ export class Track {
             this.places = json.track.places.place._attributes.placeID;
             this.recordingDate = json.track.recordingDate._text;
             this.speakers = getAttributeOrMap(json.track.speakers.speaker, 'speakerID');
-            this.languages = getAttributeOrMap(json.track.languages.language, "languageID");
             this.reels = getAttributeOrMap(json.track.spools.spool, "spoolID");
+            //this.languages = getAttributeOrMap(json.track.languages.language, "languageID");
         } else {
             throw("json not of Track");
         }
@@ -87,6 +102,6 @@ function getAttributeOrMap(json: any, attribute: string) {
     if (Array.isArray(json)) {
         return json.map((a: any) => a._attributes[attribute]);
     } else {
-        return [] + json._attributes[attribute];
+        return [] + json._attributes[attribute] ?? '';
     }
 }

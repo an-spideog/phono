@@ -1,10 +1,10 @@
-import { getCollectorCount, getCollectors, getSpeakers } from '$lib/server/db';
+import { getReelCount, getReels } from '$lib/server/db';
 import type { ElementCompact } from 'xml-js';
 
 export const load = async ( {url} ) => {
     let id = url.searchParams.get('id') ?? '';
     let text = url.searchParams.get('text') ?? '';
-    let count = await getCollectorCount(text, id);
+    let count = await getReelCount(text, id);
     let page = Number(url.searchParams.get('page') ?? 1);
 
     // Clamp the page value within the number of pages
@@ -16,11 +16,11 @@ export const load = async ( {url} ) => {
     }
 
     console.log('Page: ' + page);
-    let jsons: ElementCompact[] = await getCollectors(page, text ?? '', id ?? '');
+    let jsons: ElementCompact[] = await getReels(page, id, text);
     console.log(jsons);
     return {
-        collectorsJson: (jsons ?? []),
+        reelsJson: (jsons ?? []),
         page: page ?? 1,
-        collectorsCount: count
+        reelCount: count
     }
 }
