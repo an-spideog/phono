@@ -1,5 +1,4 @@
-export const load = (({ url }) => {
-    return {
-        id: url.searchParams.get('id')
-    }
-})
+import { dbOutputTest } from "$lib/server/db.js";
+export const load = ({ url }) => {
+  dbOutputTest();
+};

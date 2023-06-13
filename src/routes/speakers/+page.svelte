@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { Speaker } from '$lib/types';
+    import type { ISpeaker } from '$lib/types';
     export let data;
-    console.log(`Client side data: ${data.speakersJson}`);
-    let speakers: Speaker[];
-    $: speakers = data.speakersJson.map(json => new Speaker(json));
+    console.log(`Client side data: ${data.jsons}`);
+    let speakers: ISpeaker[];
+    $: speakers = data.jsons;
     $: page = data.page;
-    $: speakerCount = data.speakerCount;
+    $: speakerCount = data.hits;
     const MAX_PER_PAGE = 10;
 </script>
 
@@ -21,31 +21,31 @@
 <!--TODO: Make a component out of these display boxes so I can handle optional fields more simply-->
 {#each speakers as speaker}
     <div class="summary-box">
-        <h2>{speaker.id.toString() + " " + speaker.fullName + ' (inscne: ' + (speaker.gender==='fem' ? 'bean' : 'fear') + ')' }</h2>
+        <h2>{speaker.ID.toString() + " " + speaker.FullName + ' (inscne: ' + (speaker.Gender ==='fem' ? 'bean' : 'fear') + ')' }</h2>
         <ul>
-            {#if speaker.firstName}
-                <li>céad ainm : {speaker.firstName}</li>
+            {#if speaker.FirstName}
+                <li>céad ainm : {speaker.FirstName}</li>
             {/if}
-            {#if speaker.lastName}
-                <li>sloinne : {speaker.lastName}</li>
+            {#if speaker.LastName}
+                <li>sloinne : {speaker.LastName}</li>
             {/if}
-            {#if speaker.age}
-                <li>aois : {speaker.age}</li>
+            {#if speaker.Age}
+                <li>aois : {speaker.Age}</li>
             {/if}
-            {#if speaker.birthDate}
-                <li>dáta breithe : {speaker.birthDate}</li>
+            {#if speaker.BirthDate}
+                <li>dáta breithe : {speaker.BirthDate}</li>
             {/if}
-            {#if speaker.occupation}
-                <li>slí bheatha : {speaker.occupation}</li>
+            {#if speaker.Occupation}
+                <li>slí bheatha : {speaker.Occupation}</li>
             {/if}
-            {#if speaker.languageAbility}
-                <li>cumas teanga : {speaker.languageAbility}</li>
+            {#if speaker.LanguageAbility}
+                <li>cumas teanga : {speaker.LanguageAbility}</li>
             {/if}
-            {#if speaker.remark}
-                <li>nóta : {speaker.remark}</li>
+            {#if speaker.Remark}
+                <li>nóta : {speaker.Remark}</li>
             {/if}
         </ul>
-        <a href="/tracks?speakerId={speaker.id}">traiceanna</a>
+        <a href="/tracks?speakerId={speaker.ID}">traiceanna</a>
     </div>
 {/each}
 

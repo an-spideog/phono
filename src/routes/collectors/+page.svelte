@@ -1,12 +1,11 @@
 <script lang="ts">
-    import { afterNavigate } from '$app/navigation';
-    import { Collector } from '$lib/types';
+    import type { ICollector } from '$lib/types';
     export let data;
-    console.log(`Client side data: ${data.collectorsJson}`);
-    let collectors: Collector[];
-    $: collectors = data.collectorsJson.map(json => new Collector(json));
+    console.log(data.jsons[0]);
+    let collectors: ICollector[]//Collector[];
+    $: collectors = data.jsons//.map((json: any) => new Collector(json));
     $: page = data.page;
-    $: collectorsCount = data.collectorsCount;
+    $: collectorsCount = data.hits;
     const MAX_PER_PAGE = 10;
 </script>
 
@@ -21,12 +20,12 @@
 
 {#each collectors as collector}
     <div class="summary-box">
-        <h2>{collector.id.toString() + " " + collector.firstName + " " + collector.lastName}</h2>
+        <h2>{collector.ID.toString() + " " + collector.FirstName + " " + collector.LastName}</h2>
         <ul>
-            <li>céad ainm : {collector.firstName}</li>
-            <li>sloinne : {collector.lastName}</li>
+            <li>céad ainm : {collector.FirstName}</li>
+            <li>sloinne : {collector.LastName}</li>
         </ul>
-        <a href="/reels?collector={collector.id}">spóil</a>
+        <a href="/reels?collector={collector.ID}">spóil</a>
     </div>
 {/each}
 

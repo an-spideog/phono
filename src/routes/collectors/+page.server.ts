@@ -1,26 +1,15 @@
-import { getCollectorCount, getCollectors, getSpeakers } from '$lib/server/db';
-import type { ElementCompact } from 'xml-js';
+import { getCollectors } from "$lib/server/db";
 
-export const load = async ( {url} ) => {
-    let id = url.searchParams.get('id') ?? '';
-    let text = url.searchParams.get('text') ?? '';
-    let count = await getCollectorCount(text, id);
-    let page = Number(url.searchParams.get('page') ?? 1);
+export const load = async ({ url }) => {
+  let id = url.searchParams.get("id") ?? "";
+  let text = url.searchParams.get("text") ?? "";
+  let page = Number(url.searchParams.get("page") ?? 1);
 
-    // Clamp the page value within the number of pages
-    if (page < 1) {
-        page = 1;
-    } 
-    if (page > Math.ceil(count / 10)) {
-        page = Math.ceil(count / 10);
-    }
-
-    console.log('Page: ' + page);
-    let jsons: ElementCompact[] = await getCollectors(page, text ?? '', id ?? '');
-    console.log(jsons);
-    return {
-        collectorsJson: (jsons ?? []),
-        page: page ?? 1,
-        collectorsCount: count
-    }
-}
+  console.log("Page: " + page);
+  let result = await getCollectors(page, text, id);
+  return {
+    jsons: result.jsons,
+    hits: result.hits,
+    page: page ?? 1,
+  };
+};

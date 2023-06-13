@@ -9,19 +9,19 @@
 		</svg>
 		<ul>
 			<li aria-current={$page.url.pathname === '/introduction' ? 'page' : undefined}>
-				<a href="/introduction">Introduction</a>
+				<a href="/introduction">Réamhrá</a>
 			</li>
 			<li aria-current={$page.url.pathname === '/reels' ? 'page' : undefined}>
-				<a href="/reels">Reels</a>
+				<a href="/reels">Spóileanna</a>
 			</li>
 			<li aria-current={$page.url.pathname.startsWith('/tracks') ? 'page' : undefined}>
-				<a href="/tracks">Tracks</a>
+				<a href="/tracks">Traiceanna</a>
 			</li>
 			<li aria-current={$page.url.pathname.startsWith('/speakers') ? 'page' : undefined}>
-				<a href="/speakers">Speakers</a>
+				<a href="/speakers">Cainteoirí</a>
 			</li>
 			<li aria-current={$page.url.pathname.startsWith('/collectors') ? 'page' : undefined}>
-				<a href="/collectors">Collectors</a>
+				<a href="/collectors">Bailitheoirí</a>
 			</li>
 		</ul>
 		<svg viewBox="0 0 2 3" aria-hidden="true">
