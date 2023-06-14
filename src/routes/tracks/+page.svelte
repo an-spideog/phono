@@ -1,11 +1,10 @@
 <script lang="ts">
-    import { Track } from '$lib/types';
+    import type { ITrack } from '$lib/types';
     export let data;
-    console.log(`Client side data: ${data.tracksJson}`);
-    let tracks: Track[];
-    $: tracks = data.tracksJson.map(json => new Track(json));
+    let tracks: ITrack[];
+    $: tracks = data.jsons;
     $: page = data.page;
-    $: trackCount = data.trackCount;
+    $: trackCount = data.hits;
     const MAX_PER_PAGE = 10;
 </script>
 
@@ -21,14 +20,11 @@
 <!--TODO: Make a component out of these display boxes so I can handle optional fields more simply-->
 {#each tracks as track}
     <div class="summary-box">
-        <h2>{track.catalogueEntry}</h2>
+        <h2>{track.CatalogueEntry}</h2>
         <ul>
-            <li>id : {track.id} </li>
-            <li> leasainm : {track.nickname}</li>
-            <li>áiteanna : {track.places}</li>
-            <li>cainteoirí : {track.speakers}</li>
-            <li> dáta taifeadta : {track.recordingDate}</li>
-            <li>reels : {track.reels}</li>
+            <li>id : {track.ID} </li>
+            <li> leasainm : {track.Nickname}</li>
+            <li> dáta taifeadta : {track.RecordingDate}</li>
         </ul>
         comhad fuaime ar fáil d'úsáideoirí cláraithe
     </div>

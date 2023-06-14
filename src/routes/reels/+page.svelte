@@ -1,11 +1,10 @@
 <script lang="ts">
-    import { Reel } from '$lib/types';
+    import type { IReel } from '$lib/types';
     export let data;
-    console.log(`Client side data: ${data.reelsJson}`);
-    let reels: Reel[];
-    $: reels = data.reelsJson.map(json => new Reel(json));
+    let reels: IReel[];
+    $: reels = data.jsons;
     $: page = data.page;
-    $: reelCount = data.reelCount;
+    $: reelCount = data.hits;
     const MAX_PER_PAGE = 10;
 </script>
 
@@ -13,7 +12,6 @@
 <form data-sveltekit-preload-data>
     ID: <input name="id" autocomplete="off"/>
     Téacs: <input name="text" autocomplete="off"/>
-    Bailitheoir: <input name='collectorId' autocomplete='off'>
     <input type="submit" value="Submit"/> 
 </form>
 
@@ -22,15 +20,14 @@
 <!--TODO: Make a component out of these display boxes so I can handle optional fields more simply-->
 {#each reels as reel}
     <div class="summary-box">
-        <h2>#{reel.id} {reel.title}</h2>
+        <h2>#{reel.ID} {reel.Title}</h2>
         <ul>
-            <li>teideal: {reel.title}</li>
-            <li>uimhir tagartha: {reel.refId}</li>
-            <li>dáta cruthaithe: {reel.date}</li>
-            <li>bailitheoir: {reel.collectors}</li>
-            <li>nóta: {reel.note}</li>
+            <li>teideal: {reel.Title}</li>
+            <li>uimhir tagartha: {reel.RefId}</li>
+            <li>dáta cruthaithe: {reel.Date}</li>
+            <li>nóta: {reel.Note}</li>
         </ul>
-        <a href="/tracks?reel={reel.id}">traiceanna</a>
+        <a href="/tracks?reel={reel.ID}">traiceanna</a>
     </div>
 {/each}
 

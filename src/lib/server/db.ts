@@ -249,7 +249,7 @@ function toJson(xml: string) {
 }
 
 export async function getCollectors(page: number, text: string, id: string) {
-  return getPeople(page, text, id, "tblSpeakersNoXml2");
+  return getPeople(page, text, id, "tblCollectorsNoXml2");
 }
 
 export async function getSpeakersNew(page: number, text: string, id: string) {
@@ -311,6 +311,86 @@ export async function getPeople(
 
   INSERT INTO @t (ID, FirstName, LastName)
   SELECT ID, FirstName, LastName FROM ${database}
+  WHERE
+  (@text IS NULL OR FullText like '%'+@text+'%') AND
+  (@id IS NULL OR ID like @id)
+  ;
+
+  SELECT @hits=COUNT(*) FROM @t;
+  SELECT * FROM @t
+  ORDER BY ID
+  OFFSET @offset ROWS
+  FETCH NEXT @maxPerPage ROWS ONLY; 
+  `;
+
+  await ps.prepare(queryText);
+  let executed: any = await ps.execute({
+    offset: (page - 1) * MAX_PER_PAGE,
+    maxPerPage: MAX_PER_PAGE,
+    text: text || null,
+    id: id || null,
+  });
+  await ps.unprepare();
+  return {
+    jsons: executed.recordset,
+    hits: executed.output.hits,
+  };
+}
+
+export async function getTracksNew(page: number, text: string, id: string) {
+  const ps = new sql.PreparedStatement(pool);
+  ps.input("offset", sql.Int);
+  ps.input("maxPerPage", sql.Int);
+  ps.input("text", sql.NVarChar(sql.MAX));
+  ps.input("id", sql.Int);
+
+  ps.output("hits", sql.Int);
+
+  let queryText = `
+  DECLARE @t as TABLE(ID int, Nickname nvarchar(max), CatalogueEntry nvarchar(max), RecordingDate nvarchar(max));
+
+  INSERT INTO @t (ID, Nickname, CatalogueEntry, RecordingDate)
+  SELECT ID, Nickname, CatalogueEntry, RecordingDate FROM tblTracksNoXml2
+  WHERE
+  (@text IS NULL OR FullText like '%'+@text+'%') AND
+  (@id IS NULL OR ID like @id)
+  ;
+
+  SELECT @hits=COUNT(*) FROM @t;
+  SELECT * FROM @t
+  ORDER BY ID
+  OFFSET @offset ROWS
+  FETCH NEXT @maxPerPage ROWS ONLY; 
+  `;
+
+  await ps.prepare(queryText);
+  let executed: any = await ps.execute({
+    offset: (page - 1) * MAX_PER_PAGE,
+    maxPerPage: MAX_PER_PAGE,
+    text: text || null,
+    id: id || null,
+  });
+  await ps.unprepare();
+  return {
+    jsons: executed.recordset,
+    hits: executed.output.hits,
+  };
+}
+
+export async function getReelsNew(page: number, text: string, id: string) {
+  const ps = new sql.PreparedStatement(pool);
+  ps.input("offset", sql.Int);
+  ps.input("maxPerPage", sql.Int);
+  ps.input("text", sql.NVarChar(sql.MAX));
+  ps.input("id", sql.Int);
+
+  ps.output("hits", sql.Int);
+
+  let queryText = `
+  DECLARE @t as TABLE(ID int, Title nvarchar(max), RefID nvarchar(max), Date nvarchar(max), Note nvarchar(max));
+
+  INSERT INTO @t (ID, Title, RefID, Date, Note)
+  SELECT ID, Title, RefID, Date, Note FROM tblReelsNoXml
   WHERE
   (@text IS NULL OR FullText like '%'+@text+'%') AND
   (@id IS NULL OR ID like @id)

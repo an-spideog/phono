@@ -130,3 +130,18 @@ export interface ISpeaker {
   LanguageAbility?: string;
   Remark?: string;
 }
+
+export interface ITrack {
+  ID: number;
+  Nickname?: string;
+  CatalogueEntry?: string;
+  RecordingDate?: string;
+}
+
+export interface IReel {
+  ID: number;
+  Title?: string;
+  RefId?: number;
+  Date?: string;
+  Note?: string;
+}
