@@ -1,4 +1,4 @@
-import { getSpeakersNew } from "$lib/server/db";
+import { getSpeakersNewer } from "$lib/server/db";
 
 export const load = async ({ url }) => {
   let id = url.searchParams.get("id") ?? "";
@@ -6,7 +6,7 @@ export const load = async ({ url }) => {
   let page = Number(url.searchParams.get("page") ?? 1);
 
   console.log("Page: " + page);
-  let result = await getSpeakersNew(page, text, id);
+  let result = await getSpeakersNewer(page, text, id);
   console.log(result.jsons);
   return {
     jsons: result.jsons,

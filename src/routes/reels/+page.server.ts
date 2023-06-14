@@ -1,4 +1,4 @@
-import { getReelsNew } from "$lib/server/db";
+import { getReelsNewer } from "$lib/server/db";
 
 export const load = async ({ url }) => {
   let id = url.searchParams.get("id") ?? "";
@@ -11,8 +11,7 @@ export const load = async ({ url }) => {
     page = 1;
   }
 
-  console.log("Page: " + page);
-  let result = await getReelsNew(page, text, id);
+  let result = await getReelsNewer(page, text, id);
   return {
     jsons: result.jsons,
     page: page ?? 1,

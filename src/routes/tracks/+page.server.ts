@@ -1,5 +1,4 @@
-import { getTrackCount, getTracks, getTracksNew } from "$lib/server/db";
-import type { ElementCompact } from "xml-js";
+import { getTracksNewer } from "$lib/server/db";
 
 export const load = async ({ url }) => {
   let id = url.searchParams.get("id") ?? "";
@@ -12,7 +11,7 @@ export const load = async ({ url }) => {
   }
 
   console.log("Page: " + page);
-  let result = await getTracksNew(page, text, id);
+  let result = await getTracksNewer(page, text, id);
   console.log(result.jsons);
   return {
     jsons: result.jsons,
