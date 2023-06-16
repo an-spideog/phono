@@ -2,16 +2,20 @@
     import type { ITrack } from '$lib/types';
     export let data;
     let tracks: ITrack[];
+    let maxNumberOfPages: number;
+    $: maxNumberOfPages = data.maxNumberOfPages;
     $: tracks = data.jsons;
     $: page = data.page;
     $: trackCount = data.hits;
-    const MAX_PER_PAGE = 10;
 </script>
 
 <h1> Traiceanna </h1>
 <form data-sveltekit-preload-data>
     ID: <input name="id" autocomplete="off"/>
     Téacs: <input name="text" autocomplete="off"/>
+    Cainteoir: <input name='speakerId' autocomplete='off'/>
+    Áit: <input name='placeId' autocomplete='off'/>
+    Leasainm: <input name='nickname' autocomplete='off'/>
     <input type="submit" value="Submit"/> 
 </form>
 
@@ -25,6 +29,7 @@
             <li>id : {track.ID} </li>
             <li> leasainm : {track.Nickname}</li>
             <li> dáta taifeadta : {track.RecordingDate}</li>
+            <li> {track.CollectorIDs}</li>
         </ul>
         comhad fuaime ar fáil d'úsáideoirí cláraithe
     </div>
@@ -34,7 +39,7 @@
 <a href='?page={page-1}' >prev</a>
 {/if}
 
-{#if page < Math.ceil(trackCount / MAX_PER_PAGE) }
+{#if page < maxNumberOfPages }
 <a href='?page={page+1}'>next</a>
 {/if}
 

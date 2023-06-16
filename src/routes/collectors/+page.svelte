@@ -2,8 +2,8 @@
     import type { ICollector } from '$lib/types';
     export let data;
     console.log(data.jsons[0]);
-    let collectors: ICollector[]//Collector[];
-    $: collectors = data.jsons//.map((json: any) => new Collector(json));
+    let collectors: ICollector[];
+    $: collectors = data.jsons;
     $: page = data.page;
     $: collectorsCount = data.hits;
     const MAX_PER_PAGE = 10;
@@ -25,7 +25,7 @@
             <li>céad ainm : {collector.FirstName}</li>
             <li>sloinne : {collector.LastName}</li>
         </ul>
-        <a href="/reels?collector={collector.ID}">spóil</a>
+        <a href="/reels?collectorId={collector.ID}">spóil ({collector.ReelCount})</a>
     </div>
 {/each}
 

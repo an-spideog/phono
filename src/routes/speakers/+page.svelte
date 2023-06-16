@@ -45,7 +45,7 @@
                 <li>nóta : {speaker.Remark}</li>
             {/if}
         </ul>
-        <a href="/tracks?speakerId={speaker.ID}">traiceanna</a>
+        <a href="/tracks?speakerId={speaker.ID}">traiceanna ({speaker.TrackCount})</a>
     </div>
 {/each}
 

@@ -11,7 +11,7 @@ export const load = async ({ url }) => {
     page = 1;
   }
 
-  let result = await getReelsNewer(page, text, id);
+  let result = await getReelsNewer(page, text, id, collectorId);
   return {
     jsons: result.jsons,
     page: page ?? 1,

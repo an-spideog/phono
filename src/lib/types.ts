@@ -116,6 +116,7 @@ export interface ICollector {
   ID: number;
   FirstName: string;
   LastName: string;
+  ReelCount?: string;
 }
 
 export interface ISpeaker {
@@ -129,6 +130,7 @@ export interface ISpeaker {
   Occupation?: string;
   LanguageAbility?: string;
   Remark?: string;
+  TrackCount?: number;
 }
 
 export interface ITrack {
@@ -136,12 +138,14 @@ export interface ITrack {
   Nickname?: string;
   CatalogueEntry?: string;
   RecordingDate?: string;
+  CollectorIDs?: string;
 }
 
 export interface IReel {
   ID: number;
   Title?: string;
-  RefId?: number;
+  RefID?: number;
   Date?: string;
   Note?: string;
+  CollectorIDs?: string;
 }
