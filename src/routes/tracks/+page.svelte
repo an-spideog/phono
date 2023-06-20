@@ -16,6 +16,7 @@
     Cainteoir: <input name='speakerId' autocomplete='off'/>
     Áit: <input name='placeId' autocomplete='off'/>
     Leasainm: <input name='nickname' autocomplete='off'/>
+    Spóil: <input name='reelId' autocomplete='off'/>
     <input type="submit" value="Submit"/> 
 </form>
 
@@ -29,7 +30,17 @@
             <li>id : {track.ID} </li>
             <li> leasainm : {track.Nickname}</li>
             <li> dáta taifeadta : {track.RecordingDate}</li>
-            <li> {track.CollectorIDs}</li>
+            <li>bailitheoirí: 
+                <ul>
+            {#each track.CollectorIDs?.split(',') ?? [] as collectorId, i}
+                <li>
+                    <a href='/collectors?id={collectorId}'>{collectorId + ' ' + track.CollectorNames?.split(',')[i]}</a>
+                </li>
+            {/each}
+                </ul>
+            </li>
+            <li>áiteanna: {track.PlaceIDs}</li>
+            <li>spóil: <a href='/reels?id={track.ReelID}'>{track.ReelID} {track.ReelTitle} </a></li>
         </ul>
         comhad fuaime ar fáil d'úsáideoirí cláraithe
     </div>

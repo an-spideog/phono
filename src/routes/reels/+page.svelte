@@ -25,11 +25,19 @@
         <ul>
             <li>teideal: {reel.Title}</li>
             <li>uimhir tagartha: {reel.RefID}</li>
-            <li>dáta cruthaithe: {reel.Date}</li>
+            <li>dáta cruthaithe: {reel.Date}</li> 
             <li>nóta: {reel.Note}</li>
-            <li>bailitheoirí: {reel.CollectorIDs}</li>
+            <li>bailitheoirí: 
+                <ul>
+            {#each reel.CollectorIDs?.split(',') ?? [] as collectorId, i}
+                <li>
+                    <a href='/collectors?id={collectorId}'>{collectorId + ' ' + reel.CollectorNames?.split(',')[i]}</a>
+                </li>
+            {/each}
+                </ul>
+            </li>
         </ul>
-        <a href="/tracks?reel={reel.ID}">traiceanna</a>
+        <a href="/tracks?reelId={reel.ID}">traiceanna</a>
     </div>
 {/each}
 

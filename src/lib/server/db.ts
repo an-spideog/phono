@@ -1,5 +1,7 @@
-import * as sql from "mssql";
-import { DB_USER, DB_PASSWORD, DB_SERVER, DB_NAME } from "$env/static/private";
+import * as sql from "mssql"
+import { DB_USER, DB_PASSWORD, DB_SERVER, DB_NAME } from "$env/static/private"
+
+export const MAX_PER_PAGE = 10
 
 const settings: sql.config = {
   user: DB_USER,
@@ -9,13 +11,29 @@ const settings: sql.config = {
   options: {
     encrypt: false,
   },
-};
+}
 
-export const MAX_PER_PAGE = 10;
-const pool = await sql.connect(settings);
+const pool = await sql.connect(settings)
 
-export async function getCollectorsNew(page: number, text: string, id: string) {
-  return getStuff(
+/* a Filter passed to the get function to narrow down the results shown */
+interface Filter {
+  join: string // an SQL Join command
+  propName: string // the name of the input property to filter based on
+  propValue: string // the value of the input property
+  propType: any // the SQL type of the property
+  condition: string // the condition to filter based on
+}
+
+/* an aggregated property for get to calculate */
+interface Aggregate {
+  name: string // the name of the aggregate
+  join: string // an sql join command
+  propName: string // the name of the property to be aggregated
+  functionName: string // the aggregating function
+}
+
+export async function getCollectors(page: number, text: string, id: string) {
+  return get(
     page,
     text,
     id,
@@ -25,16 +43,16 @@ export async function getCollectorsNew(page: number, text: string, id: string) {
       {
         name: "ReelCount",
         propName: "ReelID",
-        join: "INNER JOIN tblReelCollector ON CollectorID = tblCollectorsNoXml2.ID",
+        join: "INNER JOIN tblReelCollector ON CollectorID = #base.ID",
         functionName: "COUNT",
       },
     ],
     []
-  );
+  )
 }
 
-export async function getSpeakersNewer(page: number, text: string, id: string) {
-  return getStuff(
+export async function getSpeakers(page: number, text: string, id: string) {
+  return get(
     page,
     text,
     id,
@@ -53,48 +71,25 @@ export async function getSpeakersNewer(page: number, text: string, id: string) {
       {
         name: "TrackCount",
         propName: "TrackID",
-        join: "INNER JOIN tblTrackSpeaker ON SpeakerID = tblSpeakersNoXml5.ID",
+        join: "LEFT JOIN tblTrackSpeaker ON SpeakerID = #base.ID",
         functionName: "COUNT",
       },
     ],
     []
-  );
+  )
 }
 
-interface Filter {
-  join: string;
-  propName: string;
-  propValue: string;
-  propType: any;
-  condition: string;
-}
-
-interface Aggregate {
-  name: string;
-  join: string;
-  propName: string;
-  functionName: string;
-}
-
-let exampleFilter: Filter = {
-  join: "INNER JOIN tblTrackCollector ON tblTracksNoXml2.ID=tblTrackCollector.TrackID",
-  propName: "collectorID",
-  propValue: "1",
-  propType: sql.Int,
-  condition:
-    "AND (@collectorID IS NULL OR tblTrackCollector.CollectorID = @collectorID)",
-};
-
-export async function getTracksNewer(
+export async function getTracks(
   page: number,
   text: string,
   id: string,
   collectorId: string,
   speakerId: string,
   placeId: string,
-  nickname: string
+  nickname: string,
+  reelId: string
 ) {
-  return getStuff(
+  return get(
     page,
     text,
     id,
@@ -104,21 +99,47 @@ export async function getTracksNewer(
       {
         name: "CollectorIDs",
         propName: "CollectorID, ','",
-        join: `INNER JOIN tblTrackSpool ON tblTrackSpool.TrackID = tblTracksNoXml2.ID\nINNER JOIN tblSpoolCollector ON tblSpoolCollector.SpoolID = tblTrackSpool.SpoolID`,
+        join: `LEFT JOIN tblTrackReel ON tblTrackReel.TrackID = #base.ID\nINNER JOIN tblReelCollector ON tblReelCollector.ReelID = tblTrackReel.ReelID`,
+        functionName: "STRING_AGG",
+      },
+      {
+        name: "CollectorNames",
+        propName: "tblCollectorsNoXml2.FullText, ','",
+        join: "LEFT JOIN tblTrackReel ON tblTrackReel.TrackID = #base.ID\nINNER JOIN tblReelCollector ON tblReelCollector.ReelID = tblTrackReel.ReelID\nLEFT JOIN tblCollectorsNoXml2 ON tblReelCollector.CollectorID=tblCOllectorsNoXml2.ID",
+        functionName: "STRING_AGG",
+      },
+      {
+        name: "PlaceIDs",
+        propName: "PlaceID, ','",
+        join: "LEFT JOIN tblTrackPlace ON tblTrackPlace.TrackID=#base.ID",
+        functionName: "STRING_AGG",
+      },
+      {
+        name: "ReelID",
+        propName: "tblTrackReel.ReelID, ','",
+        join: "LEFT JOIN tblTrackReel ON tblTrackReel.TrackID = #base.ID",
+        functionName: "STRING_AGG",
+      },
+      {
+        name: "ReelTitle",
+        propName: "tblReelsNoXml.Title, ','",
+        join: "LEFT JOIN tblTrackReel ON tblTrackReel.TrackID = #base.ID\nLEFT JOIN tblReelsNoXml ON tblTrackReel.ReelID=tblReelsNoXml.ID",
+        functionName: "STRING_AGG",
+      },
+      {
+        name: "SpeakerIDs",
+        propName: "tblTrackSpeaker.SpeakerID, ','",
+        join: "LEFT JOIN tblTrackSpeaker ON tblTrackSpeaker.TrackID=#base.ID",
+        functionName: "STRING_AGG",
+      },
+      {
+        name: "SpeakerNames",
+        propName: "tblSpeakersNoXml5.FullName, ','",
+        join: "LEFT JOIN tblTrackSpeaker ON tblTrackSpeaker.TrackID=#base.ID\nLEFT JOIN tblSpeakersNoXml5 ON tblTrackSpeaker.SpeakerID=tblSpeakersNoXml5.ID",
         functionName: "STRING_AGG",
       },
     ],
     [
-      /* This filter doesn't work currently, due to the problems with tblTrackCollector
-      {
-        join: "INNER JOIN tblTrackCollector ON tblTracksNoXml2.ID=tblTrackCollector.TrackID",
-        propName: "collectorID",
-        propValue: collectorId,
-        propType: sql.Int,
-        condition:
-          "AND (@collectorID IS NULL OR tblTrackCollector.CollectorID = @collectorID)",
-      },
-      */
       {
         join: "INNER JOIN tblTrackSpeaker ON tblTracksNoXml2.ID=tblTrackSpeaker.TrackID",
         propName: "speakerID",
@@ -142,23 +163,30 @@ export async function getTracksNewer(
         condition: "AND (@nickname IS NULL OR nickname LIKE @nickname)",
       },
       {
-        join: `INNER JOIN tblTrackSpool ON tblTrackSpool.TrackID = tblTracksNoXml2.ID\nINNER JOIN tblSpoolCollector ON tblSpoolCollector.SpoolID = tblTrackSpool.SpoolID`,
+        join: `INNER JOIN tblTrackReel ON tblTrackReel.TrackID = tblTracksNoXml2.ID\nINNER JOIN tblReelCollector ON tblReelCollector.ReelID = tblTrackReel.ReelID`,
         propName: "collectorID",
         propValue: collectorId,
         propType: sql.Int,
         condition: "AND (@collectorID IS NULL OR CollectorID=@collectorID)",
       },
+      {
+        join: `INNER JOIN tblTrackReel ON tblTrackReel.TrackID  = tblTracksNoXml2.ID`,
+        propName: "reelID",
+        propValue: reelId,
+        propType: sql.Int,
+        condition: "AND (@reelID IS NULL or tblTrackReel.ReelID=@reelID)",
+      },
     ]
-  );
+  )
 }
 
-export async function getReelsNewer(
+export async function getReels(
   page: number,
   text: string,
   id: string,
   collectorId: string
 ) {
-  return getStuff(
+  return get(
     page,
     text,
     id,
@@ -167,14 +195,20 @@ export async function getReelsNewer(
     [
       {
         name: "CollectorIDs",
-        join: "INNER JOIN tblReelCollector ON tblReelsNoXml.ID=tblReelCollector.ReelID",
+        join: "LEFT JOIN tblReelCollector ON #base.ID=tblReelCollector.ReelID",
         propName: "CollectorID, ','",
+        functionName: "STRING_AGG",
+      },
+      {
+        name: "CollectorNames",
+        join: "LEFT JOIN tblReelCollector ON #base.ID=tblReelCollector.ReelID\nLEFT JOIN tblCollectorsNoXml2 ON CollectorID= tblCollectorsNoXml2.ID",
+        propName: "tblCollectorsNoXml2.FullText, ','",
         functionName: "STRING_AGG",
       },
     ],
     [
       {
-        join: "INNER JOIN tblReelCollector ON tblReelsNoXml.ID=tblReelCollector.ReelID",
+        join: "LEFT JOIN tblReelCollector ON tblReelsNoXml.ID=tblReelCollector.ReelID",
         propName: "collectorID",
         propValue: collectorId,
         propType: sql.Int,
@@ -182,10 +216,17 @@ export async function getReelsNewer(
           "AND (@collectorID is NULL OR tblReelCollector.CollectorID = @collectorID)",
       },
     ]
-  );
+  )
 }
 
-async function getStuff(
+/*
+ * gets records from the database, this function is *only* called by the
+ * exported functions above, it's never called directly, and any of the string
+ * insertions done here are replacing constants for the sake of convenience,
+ * never inserting user input.
+ * User input is handled using PreparedStatement.input()
+ */
+async function get(
   page: number,
   text: string,
   id: string,
@@ -194,92 +235,73 @@ async function getStuff(
   aggregates: Aggregate[],
   filters: Filter[]
 ) {
-  const ps = new sql.PreparedStatement(pool);
-  ps.input("offset", sql.Int);
-  ps.input("maxPerPage", sql.Int);
-  ps.input("text", sql.NVarChar(sql.MAX));
-  ps.input("id", sql.Int);
+  const ps = new sql.PreparedStatement(pool)
+  ps.input("offset", sql.Int)
+  ps.input("maxPerPage", sql.Int)
+  ps.input("text", sql.NVarChar(sql.MAX))
+  ps.input("id", sql.Int)
 
-  filters.forEach((f) => {
-    ps.input(f.propName, f.propType);
-  });
+  filters.forEach((f) => ps.input(f.propName, f.propType))
 
-  ps.output("hits", sql.Int);
+  ps.output("hits", sql.Int)
 
   let queryText = `
-  DECLARE @t as TABLE(ID int, ${fields
-    .map((field) => field + " nvarchar(max)")
-    .concat(aggregates.map((agg) => agg.name + " nvarchar(max)"))});
-
-  INSERT INTO @t (ID,${fields.concat(aggregates.map((agg) => agg.name))})
-  SELECT DISTINCT ${table}.ID, ${fields.concat(
-    aggregates.map((agg) => `${agg.functionName}(${agg.propName})`)
-  )} FROM ${table}
+  ${
+    /*Create a base group of filtered results in the temporary table #base */ ""
+  }
+  SELECT ${table}.ID, ${fields} INTO #base
+  FROM ${table} 
   ${filters.map((f) => (f.propValue ? f.join : "")).join("\n")}
-  ${aggregates.map((agg) => agg.join).join("\n")}
   WHERE
-  (@text IS NULL OR FullText like '%'+@text+'%') AND
-  (@id IS NULL OR ${table}.ID like @id)
+  (@text IS NULL OR ${table}.FullText like '%'+@text+'%')
+  AND (@id IS NULL OR ${table}.ID like @id)
   ${filters.map((f) => (f.propValue ? f.condition : "")).join("\n")}
-  GROUP BY ${table}.ID, ${fields}
   ;
 
-  SELECT @hits=COUNT(*) FROM @t;
-  SELECT * FROM @t
-  ORDER BY ID
+  ${/*Process any data that needs to be aggregated*/ ""}
+  ${
+    "WITH " +
+    aggregates.map((a) => {
+      return `agg_${a.name} AS (
+          SELECT #base.ID, ${a.functionName}(${a.propName}) AS ${a.name}
+          FROM #base
+          ${a.join}
+          GROUP BY #base.ID
+          )`
+    })
+  }
+  
+  SELECT #base.ID, ${fields}, ${aggregates.map((a) => a.name)} 
+  FROM #base
+  ${
+    // Join the previously aggregated data
+    aggregates
+      .map((a) => `JOIN agg_${a.name} ON agg_${a.name}.ID = #base.ID`)
+      .join("\n")
+  }
+
+  ORDER BY #base.ID
   OFFSET @offset ROWS
-  FETCH NEXT @maxPerPage ROWS ONLY; 
-  `;
-  console.log(queryText);
+  FETCH NEXT @maxPerPage ROWS ONLY;
+  SELECT @hits=COUNT(*) FROM #base
+  `
 
   let props: any = {
     offset: (page - 1) * MAX_PER_PAGE,
     maxPerPage: MAX_PER_PAGE,
     text: text || null,
     id: id || null,
-  };
+  }
 
   filters.forEach((f) => {
-    props[f.propName] = f.propValue || null;
-  });
+    props[f.propName] = f.propValue || null
+  })
 
-  await ps.prepare(queryText);
-  let executed: any = await ps.execute(props);
-  await ps.unprepare();
+  await ps.prepare(queryText)
+  let executed: any = await ps.execute(props)
+  await ps.unprepare()
   return {
     jsons: executed.recordset,
     hits: executed.output.hits,
-  };
-}
-
-/*export function mergeRecords(r1: any, r2: any) {
-  let r3: any = {};
-  for (let key in r1) {
-    if (r1[key] == r2[key]) {
-      r3[key] = r1[key];
-    } else if (Array.isArray(r1[key])) {
-      r3[key] = [...r1[key], r2[key]];
-    } else {
-      r3[key] = [r1[key], r2[key]];
-    }
   }
-  return r3;
 }
-
-export function mergeAllRecords(records) {
-  let lastRecord = records[0];
-  let newRecords = [];
-  for (let record of records) {
-    if (record.ID == lastRecord.ID) {
-      lastRecord = mergeRecords(record, lastRecord);
-    } else {
-      console.log(`record.ID: ${record.ID}, lastRecord.ID: ${lastRecord.ID}`);
-      newRecords.push(lastRecord);
-      lastRecord = record;
-    }
-  }
-  //newRecords.push(lastRecord);
-  return newRecords;
-}
-
-*/
