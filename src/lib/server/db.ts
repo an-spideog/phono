@@ -1,7 +1,6 @@
 import * as sql from "mssql"
 import { DB_USER, DB_PASSWORD, DB_SERVER, DB_NAME } from "$env/static/private"
-
-export const MAX_PER_PAGE = 10
+import { MAX_PER_PAGE } from "$lib/globals"
 
 const settings: sql.config = {
   user: DB_USER,

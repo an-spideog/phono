@@ -1,5 +1,4 @@
 import { getTracks } from "$lib/server/db"
-import { MAX_PER_PAGE } from "$lib/server/db"
 
 export const load = async ({ url }) => {
   let id = url.searchParams.get("id") ?? ""
@@ -28,11 +27,9 @@ export const load = async ({ url }) => {
     reelId
   )
   console.log(result.jsons)
-  let maxNumberOfPages = Math.ceil(result.hits / MAX_PER_PAGE)
   return {
     jsons: result.jsons,
     page: page ?? 1,
     hits: result.hits,
-    maxNumberOfPages: maxNumberOfPages,
   }
 }

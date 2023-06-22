@@ -1,6 +1,7 @@
 import { getCollectors } from "$lib/server/db"
 
-export const load = async ({ url }) => {
+export const load = async ({ url, cookies, params }) => {
+  const language = params.language
   let id = url.searchParams.get("id") ?? ""
   let text = url.searchParams.get("text") ?? ""
   let page = Number(url.searchParams.get("page") ?? 1)
@@ -11,5 +12,6 @@ export const load = async ({ url }) => {
     jsons: result.jsons,
     hits: result.hits,
     page: page ?? 1,
+    language: language,
   }
 }

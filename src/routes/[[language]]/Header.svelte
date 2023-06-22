@@ -1,6 +1,13 @@
-<script>
+<script lang='ts'>
 	import { page } from '$app/stores';
+	import { _ } from 'svelte-i18n';
+  import LanguageSensitiveLink from './LanguageSensitiveLink.svelte'
+  import HeaderLink from './HeaderLink.svelte'
+  import { resolvePath } from '@sveltejs/kit'
+	export let language: string;
+	console.log($page);
 </script>
+
 
 <header>
 	<nav>
@@ -9,25 +16,28 @@
 		</svg>
 		<ul>
 			<li aria-current={$page.url.pathname === '/introduction' ? 'page' : undefined}>
-				<a href="/introduction">Réamhrá</a>
+			<HeaderLink link='/introduction'>{$_('introduction')}</HeaderLink>
 			</li>
 			<li aria-current={$page.url.pathname === '/reels' ? 'page' : undefined}>
-				<a href="/reels">Spóileanna</a>
+				<HeaderLink link="/reels">{$_('reels')}</HeaderLink>
 			</li>
 			<li aria-current={$page.url.pathname.startsWith('/tracks') ? 'page' : undefined}>
-				<a href="/tracks">Traiceanna</a>
+				<HeaderLink link="/tracks">{$_('tracks')}</HeaderLink>
 			</li>
 			<li aria-current={$page.url.pathname.startsWith('/speakers') ? 'page' : undefined}>
-				<a href="/speakers">Cainteoirí</a>
+				<HeaderLink link="/speakers">{$_('speakers')}</HeaderLink>
 			</li>
 			<li aria-current={$page.url.pathname.startsWith('/collectors') ? 'page' : undefined}>
-				<a href="/collectors">Bailitheoirí</a>
+				<HeaderLink link="/collectors">{$_('collectors')}</HeaderLink>
 			</li>
 		</ul>
 		<svg viewBox="0 0 2 3" aria-hidden="true">
 			<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
 		</svg>
 	</nav>
+		
+	<a class='language-button' data-sveltekit-preload-data=off href={resolvePath($page.route.id ?? '', {language: 'en'})}> English </a>
+	<a class='language-button' data-sveltekit-preload-data=off href={resolvePath($page.route.id ?? '', {language: 'ga'})}> Irish </a>
 </header>
 
 <style>
@@ -51,6 +61,13 @@
 
 	path {
 		fill: var(--background);
+	}
+
+	.language-button {
+		padding: 5px;
+		background: white;
+		margin: 5px;
+		border-radius: 5px;
 	}
 
 	ul {
@@ -83,7 +100,7 @@
 		border-top: var(--size) solid var(--color-theme-1);
 	}
 
-	nav a {
+	nav a, :global(.style-in-parent) {
 		display: flex;
 		height: 100%;
 		align-items: center;
