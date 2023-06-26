@@ -1,15 +1,19 @@
 <script lang='ts'>
 	import { page } from '$app/stores';
 	import { _ } from 'svelte-i18n';
-  import LanguageSensitiveLink from './LanguageSensitiveLink.svelte'
-  import HeaderLink from './HeaderLink.svelte'
-  import { resolvePath } from '@sveltejs/kit'
-	export let language: string;
-	console.log($page);
+	import LanguageSensitiveLink from './LanguageSensitiveLink.svelte'
+	import HeaderLink from './HeaderLink.svelte'
+	import { resolvePath } from '@sveltejs/kit'
+	export let email: string;
 </script>
 
 
 <header>
+	{#if email}
+	Logged in as: {email}
+	{:else}
+	<LanguageSensitiveLink link=/login>Login</LanguageSensitiveLink>
+	{/if}
 	<nav>
 		<svg viewBox="0 0 2 3" aria-hidden="true">
 			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />

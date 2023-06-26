@@ -8,7 +8,7 @@
 </script>
 
 <div class="app">
-	<Header language={data.language}/>
+	<Header email={data.email}/>
 
 	<main>
 		<slot />

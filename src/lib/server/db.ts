@@ -1,6 +1,8 @@
 import * as sql from "mssql"
 import { DB_USER, DB_PASSWORD, DB_SERVER, DB_NAME } from "$env/static/private"
 import { MAX_PER_PAGE } from "$lib/globals"
+import { v4 as uuid } from "uuid"
+import { Collector } from "$lib/types"
 
 const settings: sql.config = {
   user: DB_USER,
@@ -12,7 +14,84 @@ const settings: sql.config = {
   },
 }
 
+const USER_TABLE = "tblTestUsers2"
+
 const pool = await sql.connect(settings)
+
+export async function logout(sessionId: string) {
+  const ps = new sql.PreparedStatement(pool)
+  ps.input("sessionId", sql.NVarChar(sql.MAX))
+  let queryText = `
+  UPDATE ${USER_TABLE}
+  SET SessionID=null
+  WHERE SessionID=@sessionId`
+  await ps.prepare(queryText)
+  await ps.execute({ sessionId })
+  await ps.unprepare()
+}
+
+export async function validateSession(sessionId: string) {
+  const ps = new sql.PreparedStatement(pool)
+  ps.input("sessionId", sql.NVarChar(sql.MAX))
+  ps.output("email", sql.NVarChar(sql.MAX))
+  let queryText = `
+  SELECT @email=Email FROM ${USER_TABLE}
+  WHERE SessionID=@sessionId
+  `
+  console.log(queryText)
+  await ps.prepare(queryText)
+  let executed: any = await ps.execute({ sessionId: sessionId })
+  await ps.unprepare()
+  return executed.output.email
+}
+
+export async function validateCredentials(email: string, password: string) {
+  const ps = new sql.PreparedStatement(pool)
+  ps.input("email", sql.NVarChar(sql.MAX))
+  ps.input("password", sql.VarChar(sql.MAX))
+  ps.output("accepted", sql.Int)
+  let queryText = `
+  IF EXISTS(SELECT * FROM ${USER_TABLE} WHERE Email=@email AND PasswordHash=HASHBYTES('sha1', @password))
+    SET @accepted=1
+  ELSE
+    SET @accepted=0
+  `
+  console.log(queryText)
+  await ps.prepare(queryText)
+  let executed: any = await ps.execute({ email: email, password: password })
+  await ps.unprepare()
+
+  console.log("accepted: " + executed.output.accepted)
+
+  return executed.output.accepted
+}
+
+export async function testSession() {
+  const id = await createSession("test")
+  console.log(`created session for test, id: ${id}`)
+}
+
+export async function createSession(email: string) {
+  const ps = new sql.PreparedStatement(pool)
+  ps.input("email", sql.NVarChar(sql.MAX))
+  ps.input("sessionId", sql.NVarChar(sql.MAX))
+  const sessionId = uuid()
+  console.log(`New session id: ${sessionId}`)
+  let queryText = `
+  UPDATE ${USER_TABLE}
+  SET SessionID = @sessionId
+  WHERE Email=@email;
+  `
+  console.log(queryText)
+  console.log("0")
+  await ps.prepare(queryText)
+  console.log("1")
+  let executed: any = await ps.execute({ email: email, sessionId: sessionId })
+  console.log("2")
+  await ps.unprepare()
+  console.log("3")
+  return sessionId
+}
 
 /* a Filter passed to the get function to narrow down the results shown */
 interface Filter {
@@ -114,6 +193,12 @@ export async function getTracks(
         functionName: "STRING_AGG",
       },
       {
+        name: "PlaceNames",
+        propName: "tblPlaceNames.Text, ','",
+        join: "LEFT JOIN tblTrackPlace ON tblTrackPlace.TrackID=#base.ID\nLEFT JOIN tblPlaceNames on tblTrackPlace.PlaceID=tblPlaceNames.PlaceID AND LangID=2",
+        functionName: "STRING_AGG",
+      },
+      {
         name: "ReelID",
         propName: "tblTrackReel.ReelID, ','",
         join: "LEFT JOIN tblTrackReel ON tblTrackReel.TrackID = #base.ID",
@@ -176,6 +261,28 @@ export async function getTracks(
         condition: "AND (@reelID IS NULL or tblTrackReel.ReelID=@reelID)",
       },
     ]
+  )
+}
+
+export async function getTracksWithoutSound(
+  page: number,
+  text: string,
+  id: string,
+  collectorId: string,
+  speakerId: string,
+  placeId: string,
+  nickname: string,
+  reelId: string
+) {
+  return getTracks(
+    page,
+    text,
+    id,
+    collectorId,
+    speakerId,
+    placeId,
+    nickname,
+    reelId
   )
 }
 
@@ -260,14 +367,16 @@ async function get(
   ${/*Process any data that needs to be aggregated*/ ""}
   ${
     "WITH " +
-    aggregates.map((a) => {
-      return `agg_${a.name} AS (
+    aggregates
+      .map((a) => {
+        return `agg_${a.name} AS (
           SELECT #base.ID, ${a.functionName}(${a.propName}) AS ${a.name}
           FROM #base
           ${a.join}
           GROUP BY #base.ID
           )`
-    })
+      })
+      .join(",\n")
   }
   
   SELECT #base.ID, ${fields}, ${aggregates.map((a) => a.name)} 
@@ -284,6 +393,7 @@ async function get(
   FETCH NEXT @maxPerPage ROWS ONLY;
   SELECT @hits=COUNT(*) FROM #base
   `
+  console.log(queryText)
 
   let props: any = {
     offset: (page - 1) * MAX_PER_PAGE,

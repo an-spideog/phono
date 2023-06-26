@@ -8,6 +8,7 @@
     $: tracks = data.jsons;
     $: page = data.page;
     $: trackCount = data.hits;
+    $: email = data.email;
 </script>
 
 <h1> {$_('tracks')} </h1>
@@ -37,10 +38,18 @@
             {/each}
                 </ul>
             </li>
-            <li>{$_('places')}: {track.PlaceIDs}</li>
+            <li>{$_('places')}:
+                <ul>
+                {#each track.PlaceIDs?.split(',') ?? [] as placeId, i}
+                    <li>
+                        <a href='//logainm.ie/{placeId}.aspx'>{placeId} {track.PlaceNames?.split(',')[i]}</a>
+                    </li>
+                {/each}
+                </ul>
+            </li>
             <li>{$_('reels')}: <a href='/reels?id={track.ReelID}'>{track.ReelID} {track.ReelTitle} </a></li>
         </ul>
-        {$_('soundFileAvailable')}
+        {data.soundTrackMessage}
     </div>
 {/each}
 
