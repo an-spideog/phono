@@ -1,9 +1,7 @@
 <script lang="ts">
-    import { language } from "$lib/stores"
 import type { PageData } from "./$types";
 
     export let data: PageData;
-    console.log(data);
 </script>
 {#if data.language === 'ga'}
 <h1>Cartlann Fuaime an Bhrainse Logainmneacha</h1>

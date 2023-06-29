@@ -20,7 +20,7 @@
   "reel": "Reel",
   "place": "Place",
   "recordingDate": "Recording Date",
-  "soundFileAvailable": "Sound file available to registered users",
+  "soundFileAvailableTo": "Sound file available to registered users",
   "speaker": "Speaker",
   "numberOfSpeakers": "Number of speakers",
   "numberOfCollectors": "Number of collectors",
@@ -35,5 +35,12 @@
   "occupation": "Occupation",
   "remark": "Remark",
   "nickname": "Nickname",
-  "places": "Places"
+  "places": "Places",
+  "logIn": "Log in",
+  "email": "Email",
+  "password": "Password",
+  "login": "Login",
+  "loggedInAs": "You are logged in as",
+  "forgottenPassword": "Forgotten Password",
+  "logOut": "Log out"
 }

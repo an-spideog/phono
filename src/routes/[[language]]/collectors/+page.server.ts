@@ -6,7 +6,6 @@ export const load = async ({ url, cookies, params }) => {
   let text = url.searchParams.get("text") ?? ""
   let page = Number(url.searchParams.get("page") ?? 1)
 
-  console.log("Page: " + page)
   let result = await getCollectors(page, text, id)
   return {
     jsons: result.jsons,

@@ -1,20 +1,24 @@
 <script lang='ts'>
     export let data;
+    import { _ } from 'svelte-i18n';
     $: email = data.email
 </script>
 
 {#if !email}
-<h1>Login</h1>
+<h1>{$_('login')}</h1>
 <form method='POST' action='?/login'>
-    Email: <input name='email'>
-    Password: <input type='password' name='password'/>
-    <input type='submit' value='Log in'>
+    {$_('email')}: <input name='email'>
+    {$_('password')}: <input type='password' name='password'/>
+    <input type='submit' value={$_('logIn')}>
+    <a href='https://www.gaois.ie/identity/ga/logainm-phono/'>
+        {$_('forgottenPassword')}
+    </a>
 </form>
 
 {:else}
-<h2>Currently logged in as: {email}</h2>
+<h2>{$_('loggedInAs')}: {email}</h2>
 
 <form method='POST' action='?/logout'>
-    <input type='submit' value='Log out'>
+    <input type='submit' value={$_('logOut')}>
 </form>
 {/if}

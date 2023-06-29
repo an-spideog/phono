@@ -5,6 +5,8 @@ import {
   logout,
   validateSession,
 } from "$lib/server/db.js"
+import { redirect } from "@sveltejs/kit"
+import { goto } from "$app/navigation"
 
 export async function load({ cookies }) {
   let sessionId = cookies.get("session")
@@ -24,21 +26,18 @@ export const actions = {
     const email = String(data.get("email"))
     const password = String(data.get("password"))
     if (await validateCredentials(email, password)) {
-      console.log("success")
       const id = await createSession(email)
-      console.log("test")
       cookies.set("session", id, {
         path: "/",
         secure: true,
         httpOnly: true,
       })
-      console.log("test 2")
     } else {
-      console.log("failure")
     }
   },
   logout: async ({ cookies }) => {
     logout(cookies.get("session") ?? "")
     cookies.delete("session", { path: "/" })
+    throw redirect(302, "/en/introduction")
   },
 }

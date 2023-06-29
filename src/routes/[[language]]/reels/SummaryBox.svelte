@@ -1,5 +1,10 @@
-<script lang="ts">
-   export let object; 
-</script>
+<div class='summary-box'>
+   <slot/>
+</div>
 
-<h2> object.title </h2>
+
+<style>
+.summary-box {
+    border-bottom: 1px solid orangered;
+}
+</style>

@@ -1,29 +1,47 @@
 <script lang="ts">
-    import type { ITrack } from '$lib/types';
+    import type { Track } from '$lib/types';
     import { _ } from 'svelte-i18n';
     import Pager from '../Pager.svelte'
     import SearchBox from '../SearchBox.svelte'
+    import SummaryBox from '../reels/SummaryBox.svelte'
     export let data;
-    let tracks: ITrack[];
+    let tracks: Track[];
     $: tracks = data.jsons;
     $: page = data.page;
     $: trackCount = data.hits;
     $: email = data.email;
+
+    // This function finds the string of numbers before the letter
+    // given in a track's nickname
+    // This was used in the original project to organise the sound files seemingly
+    // This should be removed in the new version
+    function findInitialID(nickname: string) {
+        let id = '';
+        for (let c of nickname.split('')) {
+            if (c < '0' || c > '9') {
+                return id;
+            } else {
+                id += c;
+            }
+        }
+    }
 </script>
 
 <h1> {$_('tracks')} </h1>
 <SearchBox additionalInputs={[
-    {text: $_('speaker'), name: 'speakerId'},
     {text: $_('place'), name: 'placeId'},
     {text: $_('nickname'), name: 'nickname'},
-    {text: $_('reel'), name: 'reelId'}
+    {text: $_('reel'), name: 'reelId', options: data.staticReels},
+    {text: $_('speaker'), name: 'speakerId', options: data.staticSpeakers},
+    {text: $_('collector'), name: 'collectorId', options: data.staticCollectors},
+
 ]}/>
 
 <span>{$_('numberOfTracks')}: {trackCount}</span>
 
 <!--TODO: Make a component out of these display boxes so I can handle optional fields more simply-->
 {#each tracks as track}
-    <div class="summary-box">
+    <SummaryBox>
         <h2>{track.CatalogueEntry}</h2>
         <ul>
             <li>{$_('id')} : {track.ID} </li>
@@ -33,7 +51,7 @@
                 <ul>
             {#each track.CollectorIDs?.split(',') ?? [] as collectorId, i}
                 <li>
-                    <a href='/collectors?id={collectorId}'>{collectorId + ' ' + track.CollectorNames?.split(',')[i]}</a>
+                    <a href='collectors?id={collectorId}'>{collectorId + ' ' + track.CollectorNames?.split(',')[i]}</a>
                 </li>
             {/each}
                 </ul>
@@ -47,16 +65,14 @@
                 {/each}
                 </ul>
             </li>
-            <li>{$_('reels')}: <a href='/reels?id={track.ReelID}'>{track.ReelID} {track.ReelTitle} </a></li>
+            <li>{$_('reels')}: <a href='reels?id={track.ReelID}'>{track.ReelID} {track.ReelTitle} </a></li>
         </ul>
-        {data.soundTrackMessage}
-    </div>
+        {#if email}
+            <audio controls src="https://www.logainm.ie/phono/PHONO/{findInitialID(track.Nickname)}mp3s/{track.Nickname}.mp3"></audio>
+        {:else}
+            {$_('soundFileAvailableTo')}
+        {/if}
+    </SummaryBox>
 {/each}
 
 <Pager page={page} count={trackCount} />
-
-<style>
-.summary-box {
-    border-bottom: 1px solid orangered;
-}
-</style>

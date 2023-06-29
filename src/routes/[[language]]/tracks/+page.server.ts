@@ -47,11 +47,10 @@ export const load = async ({ url, cookies }) => {
       reelId
     )
   }
-  console.log(result.jsons)
   return {
     jsons: result.jsons,
     page: page ?? 1,
     hits: result.hits,
-    soundTrackMessage: email ? "Ar fáil" : "Ar fáil d'úsáideoirí cláraithe",
+    email: email, // TODO: this is not good from a security perspective, I'm just mimicking the original site for now
   }
 }

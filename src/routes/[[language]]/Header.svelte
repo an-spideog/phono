@@ -1,38 +1,33 @@
 <script lang='ts'>
 	import { page } from '$app/stores';
 	import { _ } from 'svelte-i18n';
-	import LanguageSensitiveLink from './LanguageSensitiveLink.svelte'
-	import HeaderLink from './HeaderLink.svelte'
 	import { resolvePath } from '@sveltejs/kit'
+	import LoginPanel from './LoginPanel.svelte';
 	export let email: string;
 </script>
 
 
 <header>
-	{#if email}
-	Logged in as: {email}
-	{:else}
-	<LanguageSensitiveLink link=/login>Login</LanguageSensitiveLink>
-	{/if}
+	<LoginPanel {email}/>
 	<nav>
 		<svg viewBox="0 0 2 3" aria-hidden="true">
 			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
 		</svg>
 		<ul>
-			<li aria-current={$page.url.pathname === '/introduction' ? 'page' : undefined}>
-			<HeaderLink link='/introduction'>{$_('introduction')}</HeaderLink>
+			<li aria-current={$page.url.pathname.endsWith('/introduction') ? 'page' : undefined}>
+			<a href='introduction'>{$_('introduction')}</a>
 			</li>
-			<li aria-current={$page.url.pathname === '/reels' ? 'page' : undefined}>
-				<HeaderLink link="/reels">{$_('reels')}</HeaderLink>
+			<li aria-current={$page.url.pathname.endsWith('/reels') ? 'page' : undefined}>
+				<a href="reels">{$_('reels')}</a>
 			</li>
-			<li aria-current={$page.url.pathname.startsWith('/tracks') ? 'page' : undefined}>
-				<HeaderLink link="/tracks">{$_('tracks')}</HeaderLink>
+			<li aria-current={$page.url.pathname.endsWith('/tracks') ? 'page' : undefined}>
+				<a href="tracks">{$_('tracks')}</a>
 			</li>
-			<li aria-current={$page.url.pathname.startsWith('/speakers') ? 'page' : undefined}>
-				<HeaderLink link="/speakers">{$_('speakers')}</HeaderLink>
+			<li aria-current={$page.url.pathname.endsWith('/speakers') ? 'page' : undefined}>
+				<a href="speakers">{$_('speakers')}</a>
 			</li>
-			<li aria-current={$page.url.pathname.startsWith('/collectors') ? 'page' : undefined}>
-				<HeaderLink link="/collectors">{$_('collectors')}</HeaderLink>
+			<li aria-current={$page.url.pathname.endsWith('/collectors') ? 'page' : undefined}>
+				<a href="collectors">{$_('collectors')}</a>
 			</li>
 		</ul>
 		<svg viewBox="0 0 2 3" aria-hidden="true">

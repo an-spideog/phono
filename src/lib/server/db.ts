@@ -2,7 +2,6 @@ import * as sql from "mssql"
 import { DB_USER, DB_PASSWORD, DB_SERVER, DB_NAME } from "$env/static/private"
 import { MAX_PER_PAGE } from "$lib/globals"
 import { v4 as uuid } from "uuid"
-import { Collector } from "$lib/types"
 
 const settings: sql.config = {
   user: DB_USER,
@@ -12,11 +11,32 @@ const settings: sql.config = {
   options: {
     encrypt: false,
   },
+  requestTimeout: 100000,
+  connectionTimeout: 100000,
 }
 
 const USER_TABLE = "tblTestUsers2"
 
 const pool = await sql.connect(settings)
+
+// This will be called on initialisation to provide lists
+// to use in search menus
+export async function getStaticData() {
+  const ps = new sql.PreparedStatement(pool)
+  await ps.prepare(`
+    SELECT ID, FullText as Title
+    FROM tblCollectorsNoXml2;
+    
+    SELECT ID, FullName as Title
+    FROM tblSpeakersNoXml5;
+
+    SELECT ID, Title
+    FROM tblReelsNoXml;
+  `)
+  let executed = await ps.execute({})
+  await ps.unprepare
+  return executed.recordsets
+}
 
 export async function logout(sessionId: string) {
   const ps = new sql.PreparedStatement(pool)
@@ -38,7 +58,6 @@ export async function validateSession(sessionId: string) {
   SELECT @email=Email FROM ${USER_TABLE}
   WHERE SessionID=@sessionId
   `
-  console.log(queryText)
   await ps.prepare(queryText)
   let executed: any = await ps.execute({ sessionId: sessionId })
   await ps.unprepare()
@@ -56,19 +75,11 @@ export async function validateCredentials(email: string, password: string) {
   ELSE
     SET @accepted=0
   `
-  console.log(queryText)
   await ps.prepare(queryText)
   let executed: any = await ps.execute({ email: email, password: password })
   await ps.unprepare()
 
-  console.log("accepted: " + executed.output.accepted)
-
   return executed.output.accepted
-}
-
-export async function testSession() {
-  const id = await createSession("test")
-  console.log(`created session for test, id: ${id}`)
 }
 
 export async function createSession(email: string) {
@@ -76,20 +87,14 @@ export async function createSession(email: string) {
   ps.input("email", sql.NVarChar(sql.MAX))
   ps.input("sessionId", sql.NVarChar(sql.MAX))
   const sessionId = uuid()
-  console.log(`New session id: ${sessionId}`)
   let queryText = `
   UPDATE ${USER_TABLE}
   SET SessionID = @sessionId
   WHERE Email=@email;
   `
-  console.log(queryText)
-  console.log("0")
   await ps.prepare(queryText)
-  console.log("1")
   let executed: any = await ps.execute({ email: email, sessionId: sessionId })
-  console.log("2")
   await ps.unprepare()
-  console.log("3")
   return sessionId
 }
 
@@ -194,8 +199,8 @@ export async function getTracks(
       },
       {
         name: "PlaceNames",
-        propName: "tblPlaceNames.Text, ','",
-        join: "LEFT JOIN tblTrackPlace ON tblTrackPlace.TrackID=#base.ID\nLEFT JOIN tblPlaceNames on tblTrackPlace.PlaceID=tblPlaceNames.PlaceID AND LangID=2",
+        propName: "tblPlaceNames3.Irish, ','",
+        join: "LEFT JOIN tblTrackPlace ON tblTrackPlace.TrackID=#base.ID\nLEFT JOIN tblPlaceNames3 on tblTrackPlace.PlaceID=tblPlaceNames3.PlaceID",
         functionName: "STRING_AGG",
       },
       {
@@ -264,6 +269,9 @@ export async function getTracks(
   )
 }
 
+/* This function will be called and will include the sound data, 
+the other function will not include it - 
+they are currently the same because I do not have the sound files */
 export async function getTracksWithoutSound(
   page: number,
   text: string,
@@ -393,7 +401,6 @@ async function get(
   FETCH NEXT @maxPerPage ROWS ONLY;
   SELECT @hits=COUNT(*) FROM #base
   `
-  console.log(queryText)
 
   let props: any = {
     offset: (page - 1) * MAX_PER_PAGE,

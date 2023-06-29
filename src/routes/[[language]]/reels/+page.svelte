@@ -1,26 +1,26 @@
 <script lang="ts">
-    import type { IReel, Speaker } from '$lib/types';
+    import type { Reel } from '$lib/types';
   import Pager from '../Pager.svelte'
     import SearchBox from '../SearchBox.svelte'
     import { _ } from 'svelte-i18n';
+  import SummaryBox from './SummaryBox.svelte'
     export let data;
-    let reels: IReel[];
+    let reels: Reel[];
     $: reels = data.jsons;
     $: page = data.page;
     $: reelCount = data.hits;
-    const MAX_PER_PAGE = 10;
 </script>
 
 <h1> {$_('reels')} </h1>
 <SearchBox additionalInputs={[
-    {text: $_('collector'), name: 'collectorId'}
+    {text: $_('collector'), name: 'collectorId', options: data.staticCollectors}
 ]}/>
 
 <span>{$_('numberOfReels')}: {reelCount}</span>
 
 <!--TODO: Make a component out of these display boxes so I can handle optional fields more simply-->
 {#each reels as reel}
-    <div class="summary-box">
+    <SummaryBox>
         <h2>#{reel.ID} {reel.Title}</h2>
         <ul>
             <li>{$_('title')}: {reel.Title}</li>
@@ -33,20 +33,14 @@
                 <ul>
             {#each reel.CollectorIDs?.split(',') ?? [] as collectorId, i}
                 <li>
-                    <a href='/collectors?id={collectorId}'>{collectorId + ' ' + reel.CollectorNames?.split(',')[i]}</a>
+                    <a href='collectors?id={collectorId}'>{collectorId + ' ' + reel.CollectorNames?.split(',')[i]}</a>
                 </li>
             {/each}
                 </ul>
             </li>
         </ul>
-        <a href="/tracks?reelId={reel.ID}">{$_('tracks')}</a>
-    </div>
+        <a href="tracks?reelId={reel.ID}">{$_('tracks')}</a>
+    </SummaryBox>
 {/each}
 
 <Pager page={page} count={reelCount}/>
-
-<style>
-.summary-box {
-    border-bottom: 1px solid orangered;
-}
-</style>
