@@ -1,42 +1,50 @@
 <script lang='ts'>
 	import { page } from '$app/stores';
-	import { _ } from 'svelte-i18n';
+	import { _, isLoading, locale } from 'svelte-i18n';
 	import { resolvePath } from '@sveltejs/kit'
 	import LoginPanel from './LoginPanel.svelte';
 	export let email: string;
+	export let isAdmin: boolean;
 </script>
-
 
 <header>
 	<LoginPanel {email}/>
-	<nav>
+		<nav>
 		<svg viewBox="0 0 2 3" aria-hidden="true">
 			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
 		</svg>
+		{#if !$isLoading}
 		<ul>
-			<li aria-current={$page.url.pathname.endsWith('/introduction') ? 'page' : undefined}>
-			<a href='introduction'>{$_('introduction')}</a>
+			{#if isAdmin}
+			<li aria-current={$page.url.pathname.includes('/admin') ? 'page' : undefined}>
+				<a href={resolvePath('/[[language]]/admin', $page.params)}>{$_('admin')}</a>
 			</li>
-			<li aria-current={$page.url.pathname.endsWith('/reels') ? 'page' : undefined}>
-				<a href="reels">{$_('reels')}</a>
+			{/if}
+
+			<li aria-current={$page.url.pathname.includes('/introduction') ? 'page' : undefined}>
+			<a href={resolvePath('/[[language]]/introduction', $page.params)}>{$_('introduction')}</a>
 			</li>
-			<li aria-current={$page.url.pathname.endsWith('/tracks') ? 'page' : undefined}>
-				<a href="tracks">{$_('tracks')}</a>
+			<li aria-current={$page.url.pathname.includes('/reels') ? 'page' : undefined}>
+				<a href={resolvePath('/[[language]]/reels', $page.params)}>{$_('reels')}</a>
 			</li>
-			<li aria-current={$page.url.pathname.endsWith('/speakers') ? 'page' : undefined}>
-				<a href="speakers">{$_('speakers')}</a>
+			<li aria-current={$page.url.pathname.includes('/tracks') ? 'page' : undefined}>
+				<a href={resolvePath('/[[language]]/tracks', $page.params)}>{$_('tracks')}</a>
 			</li>
-			<li aria-current={$page.url.pathname.endsWith('/collectors') ? 'page' : undefined}>
-				<a href="collectors">{$_('collectors')}</a>
+			<li aria-current={$page.url.pathname.includes('/speakers') ? 'page' : undefined}>
+				<a href={resolvePath('/[[language]]/speakers', $page.params)}>{$_('speakers')}</a>
+			</li>
+			<li aria-current={$page.url.pathname.includes('/collectors') ? 'page' : undefined}>
+				<a href={resolvePath('/[[language]]/collectors', $page.params)}>{$_('collectors')}</a>
 			</li>
 		</ul>
+		{/if}
 		<svg viewBox="0 0 2 3" aria-hidden="true">
 			<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
 		</svg>
 	</nav>
 		
-	<a class='language-button' data-sveltekit-preload-data=off href={resolvePath($page.route.id ?? '', {language: 'en'})}> English </a>
-	<a class='language-button' data-sveltekit-preload-data=off href={resolvePath($page.route.id ?? '', {language: 'ga'})}> Irish </a>
+	<a class='language-button' data-sveltekit-preload-data=off href={resolvePath($page.route.id ?? '', {...$page.params, language: 'en'})}> English </a>
+	<a class='language-button' data-sveltekit-preload-data=off href={resolvePath($page.route.id ?? '', {...$page.params, language: 'ga'})}> Irish </a>
 </header>
 
 <style>

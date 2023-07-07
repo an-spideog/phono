@@ -1,7 +1,13 @@
 import { validateSession } from "$lib/server/db"
-import type { Handle } from "@sveltejs/kit"
-import { locale } from "svelte-i18n"
+import { redirect, type Handle } from "@sveltejs/kit"
 
 export const handle: Handle = async ({ event, resolve }) => {
+  let { isAdmin } = await validateSession(event.cookies.get("session") ?? "")
+  if (!isAdmin && event.url.pathname.endsWith("/admin")) {
+    throw redirect(303, "introduction")
+  }
+  if (event.url.pathname === "/") {
+    throw redirect(302, "/introduction")
+  }
   return resolve(event)
 }

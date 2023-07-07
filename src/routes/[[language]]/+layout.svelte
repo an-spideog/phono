@@ -1,5 +1,6 @@
 <script lang>
 	import Header from './Header.svelte';
+	import { isLoading } from 'svelte-i18n';
 	import './styles.css';
 
 	export let data;
@@ -8,11 +9,15 @@
 </script>
 
 <div class="app">
-	<Header email={data.email}/>
+	{#if $isLoading}
+	Loading... 
+	{:else}
+	<Header email={data.email} isAdmin={data.isAdmin}/>
 
 	<main>
 		<slot />
 	</main>
+	{/if}
 
 </div>
 

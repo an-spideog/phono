@@ -1,18 +1,16 @@
 import {
   validateCredentials,
-  testSession,
   createSession,
   logout,
   validateSession,
 } from "$lib/server/db.js"
 import { redirect } from "@sveltejs/kit"
-import { goto } from "$app/navigation"
 
 export async function load({ cookies }) {
   let sessionId = cookies.get("session")
   let email = ""
   if (sessionId) {
-    email = await validateSession(sessionId)
+    ;({ email } = await validateSession(sessionId))
   }
 
   return {

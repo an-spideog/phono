@@ -15,9 +15,99 @@ const settings: sql.config = {
   connectionTimeout: 100000,
 }
 
-const USER_TABLE = "tblTestUsers2"
+const USER_TABLE = "tblTestUsers3"
 
 const pool = await sql.connect(settings)
+
+export async function renewTrackForUser(trackId: number, userId: number) {
+  const ps = new sql.PreparedStatement(pool)
+  ps.input("userId", sql.Int)
+  ps.input("trackId", sql.Int)
+  await ps.prepare(`
+    UPDATE tblTrackUser
+    SET AccessGranted=SYSDATETIME()
+    WHERE UserID=@userId AND TrackID=@trackId;
+  `)
+  await ps.execute({ userId, trackId })
+  await ps.unprepare()
+}
+
+export async function removeTrackFromUser(trackId: number, userId: number) {
+  const ps = new sql.PreparedStatement(pool)
+  ps.input("userId", sql.Int)
+  ps.input("trackId", sql.Int)
+  await ps.prepare(`
+    DELETE FROM tblTrackUser
+    WHERE TrackID=@trackId AND UserID=@userId;
+  `)
+  await ps.execute({ userId, trackId })
+  await ps.unprepare()
+}
+
+export async function addTrackToUser(trackId: number, userId: number) {
+  const ps = new sql.PreparedStatement(pool)
+  ps.input("userId", sql.Int)
+  ps.input("trackId", sql.Int)
+  await ps.prepare(`
+    INSERT INTO tblTrackUser (TrackID, UserID, AccessGranted)
+    VALUES (@trackId, @userId, SYSDATETIME());
+  `)
+  await ps.execute({ userId, trackId })
+  await ps.unprepare()
+}
+
+export async function createUser(
+  email: string,
+  password: string,
+  isAdmin: boolean = false
+) {
+  const ps = new sql.PreparedStatement(pool)
+  ps.input("email", sql.NVarChar(sql.MAX))
+  ps.input("password", sql.VarChar(sql.MAX))
+  ps.input("isAdmin", sql.Bit)
+  await ps.prepare(`
+    INSERT INTO ${USER_TABLE} (Email, PasswordHash, IsAdmin)
+    VALUES (@email, HASHBYTES('sha1', @password), @isAdmin)
+  `)
+  await ps.execute({ email, password, isAdmin })
+  await ps.unprepare()
+}
+
+export async function getUser(id: string) {
+  const ps = new sql.PreparedStatement(pool)
+  ps.input("id", sql.Int)
+  await ps.prepare(`
+    SELECT ID, Email, IsAdmin FROM ${USER_TABLE}
+    WHERE ID=@id;
+
+    SELECT T.*, AccessGranted FROM tblTrackUser as TU
+    JOIN tblTracksNoXml2 as T ON T.ID = TU.TrackID
+    WHERE TU.UserID=@id; 
+  `)
+  let executed: any = await ps.execute({ id: id })
+  await ps.unprepare()
+  return {
+    user: executed.recordsets[0][0],
+    tracks: executed.recordsets[1],
+  }
+}
+
+export async function getUsers() {
+  const ps = new sql.PreparedStatement(pool)
+  await ps.prepare(`
+    SELECT Users.ID, Email, IsAdmin, TrackCount FROM tblTestUsers3 as Users
+    LEFT JOIN
+    (SELECT UserID, COUNT(TrackID) as TrackCount FROM tblTrackUser
+    WHERE DateDIFF(DAY, AccessGranted, SYSDATETIME()) <= 7
+    GROUP BY UserID
+    ) as CurrentTracks ON CurrentTracks.UserID=Users.ID
+
+
+  `)
+  const executed = await ps.execute({})
+  await ps.unprepare()
+  return executed.recordset
+}
 
 // This will be called on initialisation to provide lists
 // to use in search menus
@@ -32,6 +122,9 @@ export async function getStaticData() {
 
     SELECT ID, Title
     FROM tblReelsNoXml;
+
+    SELECT ID, Nickname
+    FROM tblTracksNoXml2;
   `)
   let executed = await ps.execute({})
   await ps.unprepare
@@ -54,14 +147,18 @@ export async function validateSession(sessionId: string) {
   const ps = new sql.PreparedStatement(pool)
   ps.input("sessionId", sql.NVarChar(sql.MAX))
   ps.output("email", sql.NVarChar(sql.MAX))
+  ps.output("isAdmin", sql.Bit)
   let queryText = `
-  SELECT @email=Email FROM ${USER_TABLE}
-  WHERE SessionID=@sessionId
+  SELECT @email=Email, @isAdmin=IsAdmin FROM ${USER_TABLE}
+  WHERE SessionID=@sessionId;
   `
   await ps.prepare(queryText)
   let executed: any = await ps.execute({ sessionId: sessionId })
   await ps.unprepare()
-  return executed.output.email
+  return {
+    email: executed.output.email,
+    isAdmin: executed.output.isAdmin,
+  }
 }
 
 export async function validateCredentials(email: string, password: string) {
@@ -89,7 +186,7 @@ export async function createSession(email: string) {
   const sessionId = uuid()
   let queryText = `
   UPDATE ${USER_TABLE}
-  SET SessionID = @sessionId
+  SET SessionID = @sessionId, SessionStart = SYSDATETIME()
   WHERE Email=@email;
   `
   await ps.prepare(queryText)

@@ -30,6 +30,7 @@ export interface Track {
   PlaceNames?: string
   ReelID?: string
   ReelTitle?: string
+  AccessGranted?: Date
 }
 
 export interface Reel {
@@ -40,4 +41,11 @@ export interface Reel {
   Note?: string
   CollectorIDs?: string
   CollectorNames?: string
+}
+
+export interface User {
+  ID: number
+  Email: string
+  isAdmin: string
+  TrackCount: number | null
 }
