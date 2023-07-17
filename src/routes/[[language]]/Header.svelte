@@ -10,9 +10,6 @@
 <header>
 	<LoginPanel {email}/>
 		<nav>
-		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
-		</svg>
 		{#if !$isLoading}
 		<ul>
 			{#if isAdmin}
@@ -38,9 +35,6 @@
 			</li>
 		</ul>
 		{/if}
-		<svg viewBox="0 0 2 3" aria-hidden="true">
-			<path d="M0,0 L0,3 C0.5,3 0.5,3 1,2 L2,0 Z" />
-		</svg>
 	</nav>
 		
 	<a class='language-button' data-sveltekit-preload-data=off href={resolvePath($page.route.id ?? '', {...$page.params, language: 'en'})}> English </a>
@@ -49,7 +43,12 @@
 
 <style>
 	header {
+		position: sticky;
+		width: 100%;
+		background: var(--surface-variant);
 		display: flex;
+		top: 0;
+		z-index: 3;
 		justify-content: space-between;
 	}
 
@@ -57,24 +56,11 @@
 		margin:auto;
 		display: flex;
 		justify-content: center;
-		--background: rgba(255, 255, 255, 0.7);
-	}
-
-	svg {
-		width: 2em;
-		height: 3em;
-		display: block;
-	}
-
-	path {
-		fill: var(--background);
 	}
 
 	.language-button {
 		padding: 5px;
-		background: white;
 		margin: 5px;
-		border-radius: 5px;
 	}
 
 	ul {
@@ -104,7 +90,7 @@
 		top: 0;
 		left: calc(50% - var(--size));
 		border: var(--size) solid transparent;
-		border-top: var(--size) solid var(--color-theme-1);
+		border-top: var(--size) solid var(--secondary);
 	}
 
 	nav a, :global(.style-in-parent) {
@@ -112,7 +98,7 @@
 		height: 100%;
 		align-items: center;
 		padding: 0 0.5rem;
-		color: var(--color-text);
+		color: var(--on-surface-variant);
 		font-weight: 700;
 		font-size: 0.8rem;
 		text-transform: uppercase;
@@ -122,6 +108,6 @@
 	}
 
 	a:hover {
-		color: var(--color-theme-1);
+		color: var(--primary);
 	}
 </style>

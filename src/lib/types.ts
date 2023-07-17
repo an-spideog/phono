@@ -46,6 +46,6 @@ export interface Reel {
 export interface User {
   ID: number
   Email: string
-  isAdmin: string
+  IsAdmin: string
   TrackCount: number | null
 }

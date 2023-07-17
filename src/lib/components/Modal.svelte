@@ -8,7 +8,7 @@
     <div class=modal>
         <div class=title-line>
             {title}
-            <button on:click={() => isOpen = false}>X</button>
+            <button on:click={() => isOpen = false}><span class=material-icons/></button>
         </div>
         <slot/>
     </div>

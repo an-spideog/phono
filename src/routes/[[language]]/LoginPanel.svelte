@@ -1,14 +1,25 @@
 <script lang='ts'>
     import { page } from "$app/stores";
-    export let email: string;
+    import VStack from "$lib/components/VStack.svelte"
     import { _ } from "svelte-i18n";
+    export let email: string;
 </script>
 
 {#if email}
-    You are logged in as: <b>{email}</b>
-    <form method='POST' action='login?/logout'>
-        <input type='submit' value='logout'>
-    </form>
+    <VStack>
+        <div>
+            You are logged in as: <b>{email}</b>
+        </div>
+        <form method='POST' action='login?/logout'>
+            <input type='submit' value='logout'>
+        </form>
+    </VStack>
 {:else}
     <a href='login'>{$_('login')}</a>
 {/if}
+
+<style>
+    * {
+        padding-left: 5px;
+    }
+</style>

@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { Track, User } from "$lib/types"
   import Button from "./Button.svelte"
+  import Menu from "./Menu.svelte"
 
     export let track: Track;
     export let user: User;
@@ -12,26 +13,16 @@
             <span class=nickname>({track.ID}) {track.Nickname}</span>
             <span class=catalogue-entry>{track.CatalogueEntry}</span>
         </div>
-        <span class=expiry-date>{track.AccessGranted}</span>
+        <span class=expiry-date>Expires:{track.AccessGranted}</span>
     </div>
 
     <div class=right>
-        <form method="POST" action="?/renew">
-            <input type='hidden' name='trackId' value={track.ID}>
-            <input type='hidden' name='userId' value={user.ID}>
-            <Button type=secondary>Renew</Button>
-        </form>
-        <form method="POST" action="?/remove">
-            <Button type=danger>X Revoke permission now</Button>
-            <input type='hidden' name='trackId' value={track.ID}>
-            <input type='hidden' name='userId' value={user.ID}>
-        </form>
+        <Menu {user} {track}/>
     </div>
 </div>
 
 <style>
 .track-list-item {
-    background-color: white;
     margin-bottom: 2px;
     padding: 20px;
     display: flex;
@@ -50,12 +41,24 @@
     display: flex;
     flex-direction: column;
     align-content: end;
-    justify-content: end;
+    align-items: end;
+    justify-content: space-around;
     text-align: right;
 }
 
+
+button {
+    background: none;
+    border: none;
+    padding: 1em;
+}
+
+button:hover {
+    background: var(--primary-container);
+}
+
 .nickname {
-    color: black;
+    color: var(--on-surface);
     font-weight: bold;
 }
 
@@ -68,4 +71,11 @@
     text-overflow: ellipsis;
 }
 
+.expiry-date {
+    color: var(--on-surface-variant);
+}
+
+.catalogue-entry {
+    color: var(--on-surface-variant);
+}
 </style>

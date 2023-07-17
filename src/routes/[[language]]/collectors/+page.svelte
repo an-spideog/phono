@@ -3,6 +3,7 @@
     import SearchBox from '../SearchBox.svelte';
     import { _ } from 'svelte-i18n';
     import Pager from '../Pager.svelte'
+  import SummaryBox from '../../../SummaryBox.svelte'
     export let data;
     let collectors: Collector[];
     $: collectors = data.jsons;
@@ -16,15 +17,14 @@
 <span>{$_('numberOfCollectors')}: {collectorsCount}</span>
 
 {#each collectors as collector}
-    <div class="summary-box">
+<SummaryBox>
         <h2>{collector.ID.toString() + " " + collector.FirstName + " " + collector.LastName}</h2>
         <ul>
             <li>{$_('firstName')}: {collector.FirstName}</li>
             <li>{$_('lastName')}: {collector.LastName}</li>
         </ul>
-        <!-- so do I just have to pass around the current language property everywhere? that seems silly -->
         <a href="reels?collectorId={collector.ID}">{$_('reels')} ({collector.ReelCount})</a>
-    </div>
+</SummaryBox>
 {/each}
 
 <Pager page={pageNumber} count={collectorsCount}/>

@@ -5,6 +5,6 @@
 
 <style>
 .summary-box {
-    border-bottom: 1px solid orangered;
+    border-bottom: 1px solid var(--primary);
 }
 </style>

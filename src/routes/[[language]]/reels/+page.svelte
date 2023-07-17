@@ -3,7 +3,7 @@
   import Pager from '../Pager.svelte'
     import SearchBox from '../SearchBox.svelte'
     import { _ } from 'svelte-i18n';
-  import SummaryBox from './SummaryBox.svelte'
+    import SummaryBox from '../../../SummaryBox.svelte';
     export let data;
     let reels: Reel[];
     $: reels = data.jsons;

@@ -1,23 +1,21 @@
 <script lang="ts">
-  import UserListItem from "../../../UserListItem.svelte"
-  import Modal from "../../../Modal.svelte";
-  import Button from "../../../Button.svelte";
+    import Modal from "../../../lib/components/Modal.svelte";
+    import Button from "../../../lib/components/Button.svelte";
+    import UserList from "$lib/components/UserList.svelte"
     export let data;
+    let searchText = ''
     let isModalOpen: boolean = false;
-    let searchText=''
 </script>
 
 <h1>Úsáideoirí</h1>
 <div class='search-and-button'>
-    <input bind:value={searchText} placeholder="cuardaigh">
-    <button on:click={() => isModalOpen=true}>Nua</button>
+<div class=h-stack>
+    <input bind:value={searchText} placeholder="Cuardaigh">
+    <Button type=primary on:click={() => isModalOpen=true}>Nua</Button>
+</div>
 </div>
 
-<ul>
-    {#each data.users as user}
-    <UserListItem {user}/>
-    {/each}
-</ul>
+<UserList users={data.users} {searchText}/>
 
 <Modal title="Úsáideoir Nua"
     bind:isOpen={isModalOpen}>
@@ -29,11 +27,14 @@
     </form>
 </Modal>
 
-
 <style>
-ul {
-    margin: 0;
-    padding: 0;
-}
-</style>
+    .h-stack {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
 
+    .search-and-button {
+        margin-bottom: 10px;
+    }
+</style>

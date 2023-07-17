@@ -8,7 +8,7 @@
 
 <style>
     button {
-        padding: 15px;
+        padding: 1.2em 2em;
         border-radius: 30px;
         cursor: pointer;
         display: block;
@@ -20,22 +20,22 @@
     }
 
     .primary {
-        background: blue;
-        color: white;
+        background: var(--primary);
+        color: var(--on-primary);
         border: none;
         font-weight: bold;
     }
 
     .secondary {
-        background: white;
-        color: blue;
-        border: blue 2px solid;
+        background: var(--primary-container);
+        color: var(--on-primary-container);
+        border: none;
     }
 
     .danger {
         background: none;
         border: none;
-        color: red;
+        color: var(--error);
     }
 
 

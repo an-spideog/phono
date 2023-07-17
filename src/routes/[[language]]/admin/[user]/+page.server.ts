@@ -1,4 +1,8 @@
-import { addTrackToUser, getUser, removeTrackFromUser } from "$lib/server/db.js"
+import {
+  addTracksToUser,
+  getUser,
+  removeTrackFromUser,
+} from "$lib/server/db.js"
 import { renewTrackForUser } from "$lib/server/db.js"
 
 import type { Track } from "$lib/types.js"
@@ -29,8 +33,9 @@ export const actions = {
   },
   add: async ({ request }) => {
     const data = await request.formData()
-    const trackId = Number(data.get("trackId"))
+    const trackIds = String(data.get("trackIds")).replaceAll(" ", "").split(",")
+    console.log("trackIds: ", trackIds)
     const userId = Number(data.get("userId"))
-    addTrackToUser(trackId, userId)
+    addTracksToUser(trackIds, userId)
   },
 }

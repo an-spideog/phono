@@ -1,7 +1,6 @@
 <script>
   import HStack from "../../../HStack.svelte"
   import VStack from "../../../VStack.svelte"
-  import ZStack from "../../../ZStack.svelte"
 
 </script>
 <VStack>

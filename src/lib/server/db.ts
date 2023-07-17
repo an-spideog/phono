@@ -44,15 +44,26 @@ export async function removeTrackFromUser(trackId: number, userId: number) {
   await ps.unprepare()
 }
 
-export async function addTrackToUser(trackId: number, userId: number) {
+export async function addTracksToUser(trackIds: string[], userId: number) {
   const ps = new sql.PreparedStatement(pool)
   ps.input("userId", sql.Int)
+  let props: any = { userId }
+  trackIds.forEach((t, index) => {
+    ps.input(`track${index}`, sql.Int)
+    props[`track${index}`] = t
+  })
+
   ps.input("trackId", sql.Int)
-  await ps.prepare(`
+  let queryText = `
     INSERT INTO tblTrackUser (TrackID, UserID, AccessGranted)
-    VALUES (@trackId, @userId, SYSDATETIME());
-  `)
-  await ps.execute({ userId, trackId })
+    VALUES 
+    ${trackIds.map((t, index) => `(@track${index}, @userId, SYSDATETIME())`)};
+  `
+  console.log(queryText)
+  console.log(props)
+
+  await ps.prepare(queryText)
+  await ps.execute(props)
   await ps.unprepare()
 }
 
