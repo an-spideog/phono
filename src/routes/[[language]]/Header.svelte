@@ -3,6 +3,9 @@
 	import { _, isLoading, locale } from 'svelte-i18n';
 	import { resolvePath } from '@sveltejs/kit'
 	import LoginPanel from './LoginPanel.svelte';
+  import HStack from '$lib/components/HStack.svelte'
+  import Icon from '$lib/components/Icon.svelte'
+  import NavButton from './NavButton.svelte'
 	export let email: string;
 	export let isAdmin: boolean;
 </script>
@@ -13,26 +16,14 @@
 		{#if !$isLoading}
 		<ul>
 			{#if isAdmin}
-			<li aria-current={$page.url.pathname.includes('/admin') ? 'page' : undefined}>
-				<a href={resolvePath('/[[language]]/admin', $page.params)}>{$_('admin')}</a>
-			</li>
+				<NavButton tab=admin icon=shield/>
 			{/if}
 
-			<li aria-current={$page.url.pathname.includes('/introduction') ? 'page' : undefined}>
-			<a href={resolvePath('/[[language]]/introduction', $page.params)}>{$_('introduction')}</a>
-			</li>
-			<li aria-current={$page.url.pathname.includes('/reels') ? 'page' : undefined}>
-				<a href={resolvePath('/[[language]]/reels', $page.params)}>{$_('reels')}</a>
-			</li>
-			<li aria-current={$page.url.pathname.includes('/tracks') ? 'page' : undefined}>
-				<a href={resolvePath('/[[language]]/tracks', $page.params)}>{$_('tracks')}</a>
-			</li>
-			<li aria-current={$page.url.pathname.includes('/speakers') ? 'page' : undefined}>
-				<a href={resolvePath('/[[language]]/speakers', $page.params)}>{$_('speakers')}</a>
-			</li>
-			<li aria-current={$page.url.pathname.includes('/collectors') ? 'page' : undefined}>
-				<a href={resolvePath('/[[language]]/collectors', $page.params)}>{$_('collectors')}</a>
-			</li>
+			<NavButton tab=introduction icon=note/>
+			<NavButton tab=reels icon=folder/>
+			<NavButton tab=tracks icon=speaker/>
+			<NavButton tab=speakers icon=face/>
+			<NavButton tab=collectors icon=mic/>
 		</ul>
 		{/if}
 	</nav>
@@ -50,6 +41,12 @@
 		top: 0;
 		z-index: 3;
 		justify-content: space-between;
+	}
+
+	@media screen and (max-width: 600px) {
+		header {
+			display: none;
+		}
 	}
 
 	nav {
@@ -76,22 +73,6 @@
 		background-size: contain;
 	}
 
-	li {
-		position: relative;
-		height: 100%;
-	}
-
-	li[aria-current='page']::before {
-		--size: 6px;
-		content: '';
-		width: 0;
-		height: 0;
-		position: absolute;
-		top: 0;
-		left: calc(50% - var(--size));
-		border: var(--size) solid transparent;
-		border-top: var(--size) solid var(--secondary);
-	}
 
 	nav a, :global(.style-in-parent) {
 		display: flex;

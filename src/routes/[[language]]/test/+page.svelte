@@ -1,6 +1,7 @@
 <script>
-  import HStack from "../../../HStack.svelte"
-  import VStack from "../../../VStack.svelte"
+    import VStack from "$lib/components/VStack.svelte";
+    import HStack from "$lib/components/HStack.svelte";
+    import ZStack from "$lib/components/ZStack.svelte";
 
 </script>
 <VStack>
@@ -36,7 +37,44 @@
     </div>
 </ZStack>
 
+<HStack>
+    <button>
+        <ZStack>
+            <div class=content>
+                button
+            </div>
+        </ZStack>
+    </button>
+    <a href=#>
+        <ZStack>
+            <div class=content>
+                link
+            </div>
+        </ZStack>
+    </a>
+
+</HStack>
 <style>
+    button {
+        border: none;
+        background: none;
+        padding: 0;
+        border-radius: 400px;
+        overflow: hidden;
+    }
+
+    a {
+        border: none;
+        background: none;
+        padding: 0;
+        border-radius: 400px;
+        overflow: hidden;
+
+    }
+
+    .content {
+        background: blue;
+    }
     div {
         padding: 20px;
         opacity: 0.5;

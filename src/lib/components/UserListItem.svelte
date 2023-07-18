@@ -1,14 +1,17 @@
 <script lang="ts">
   import type { User } from "$lib/types"
-  import TrackListItem from "./TrackListItem.svelte"
+  import Hoverable from "./Hoverable.svelte";
   import VStack from "./VStack.svelte";
+  import HStack from "./HStack.svelte";
 
   export let user: User
 </script>
 
 <li>
   <a href='admin/{user.ID}'>
-      <VStack>
+    <Hoverable --hover-color='var(--on-surface)'>
+        <HStack --padding=20px>
+        <VStack>
         <span class=email>
           {user.Email}
         </span>
@@ -26,7 +29,12 @@
         {user.TrackCount} traic
         {/if}
       </VStack>
-  </a>
+
+
+        </HStack>
+      
+          </Hoverable>
+        </a>
 </li>
 
 <style>
@@ -34,18 +42,22 @@
     color: var(--on-surface-variant);
   }
   li {
-    padding: 20px;
     list-style: none;
     margin-bottom: 2px;
   }
-  li:hover {
+  /*li:hover {
     background: var(--surface-variant);
-  }
+  }*/
   a, a:visited, a:hover {
+    text-decoration: none;
+    color: var(--on-surface-variant);
+  }
+  .content {
     display: flex;
     justify-content: space-between;
     text-decoration: none;
     color: var(--on-surface-variant);
+    padding: 20px;
   }
   a:hover {
     text-decoration: none;

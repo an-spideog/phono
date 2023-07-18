@@ -35,8 +35,10 @@ body {
 }
 
 a,
-a:visited {
+a:visited,
+a:hover {
   color: var(--primary);
+  text-decoration: none;
 }
 
 pre {
@@ -57,4 +59,10 @@ pre {
   flex-direction: column;
   justify-content: center;
   margin: 0 auto;
+}
+
+button {
+  background: none;
+  border: none;
+  padding: none;
 }

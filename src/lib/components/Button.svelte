@@ -1,22 +1,36 @@
 <script lang="ts">
+  import HStack from "./HStack.svelte"
+    import Hoverable from "./Hoverable.svelte"
+
     export let type: 'primary' | 'secondary' | 'danger';
 </script>
 
-<button on:click class={type}>
-    <slot/>
+
+<button on:click>
+    <Hoverable --hover-color=var(--on-primary)>
+        <div class='button-content {type}'>
+
+            <slot/>
+        </div>
+    </Hoverable>
 </button>
 
+
 <style>
+    /* How do button and the hoverable have different border radiuses?? */
+    /* because they're calculating from different like boxes, I think */
     button {
-        padding: 1.2em 2em;
-        border-radius: 30px;
-        cursor: pointer;
-        display: block;
-        margin: inherit;
+        background: none;
+        border: none;
+        padding: 0;
+        border-radius: 800px;
+        overflow: hidden;
     }
 
-    button:hover {
-        opacity: 0.6;
+    .button-content {
+        padding: 1.2em 2em;
+        cursor: pointer;
+        margin: inherit;
     }
 
     .primary {
