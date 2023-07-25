@@ -93,13 +93,24 @@ export async function getUser(id: string) {
 
     SELECT T.*, AccessGranted FROM tblTrackUser as TU
     JOIN tblTracksNoXml2 as T ON T.ID = TU.TrackID
-    WHERE TU.UserID=@id; 
+    WHERE TU.UserID=@id
+    AND DateDIFF(DAY, AccessGranted, SYSDATETIME()) <= 7;
+
+    SELECT T.*, AccessGranted FROM tblTrackUser as TU
+    JOIN tblTracksNoXml2 as T ON T.ID = TU.TrackID
+    WHERE TU.UserID=@id
+    AND DateDIFF(DAY, AccessGranted, SYSDATETIME()) > 7
+    AND DateDIFF(DAY, AccessGranted, SYSDATETIME()) <= 30
+    ;
+
   `)
   let executed: any = await ps.execute({ id: id })
   await ps.unprepare()
+  console.log(executed.recordsets)
   return {
     user: executed.recordsets[0][0],
     tracks: executed.recordsets[1],
+    expiredTracks: executed.recordsets[2],
   }
 }
 

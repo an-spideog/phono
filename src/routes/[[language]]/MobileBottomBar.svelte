@@ -6,46 +6,42 @@
 	import HStack from '$lib/components/HStack.svelte'
 	import Icon from '$lib/components/Icon.svelte'
 	import NavButton from './NavButton.svelte'
-	export let email: string;
 	export let isAdmin: boolean;
 </script>
 
-<header>
-	<LoginPanel {email}/>
+<footer>
 		<nav>
 		{#if !$isLoading}
-		<ul>
+			<HStack>
 			{#if isAdmin}
-				<NavButton tab=admin icon=shield/>
+				<NavButton tab=admin icon=shield showText=under/>
 			{/if}
 
-			<NavButton tab=introduction icon=note/>
-			<NavButton tab=reels icon=folder/>
-			<NavButton tab=tracks icon=speaker/>
-			<NavButton tab=speakers icon=face/>
-			<NavButton tab=collectors icon=mic/>
-		</ul>
+			<NavButton tab=introduction icon=note showText=under/>
+			<NavButton tab=reels icon=folder showText=under/>
+			<NavButton tab=tracks icon=speaker showText=under/>
+			<NavButton tab=speakers icon=face showText=under/>
+			<NavButton tab=collectors icon=mic showText=under/>
+
+			</HStack>
 		{/if}
 	</nav>
-		
-	<a class='language-button' data-sveltekit-preload-data=off href={resolvePath($page.route.id ?? '', {...$page.params, language: 'en'})}> English </a>
-	<a class='language-button' data-sveltekit-preload-data=off href={resolvePath($page.route.id ?? '', {...$page.params, language: 'ga'})}> Irish </a>
-</header>
+</footer>
 
 <style>
-	header {
-		width: 100%;
+	footer {
 		height: 100%;
+		position: sticky;
+		width: 100%;
 		background: var(--surface-variant);
 		display: flex;
-		padding: 0;
-		margin: 0;
+		bottom: 0;
 		z-index: 3;
 		justify-content: space-between;
 	}
 
-	@media screen and (max-width: 1000px) {
-		header {
+	@media screen and (min-width: 600px) {
+		footer {
 			display: none;
 		}
 	}
@@ -60,20 +56,6 @@
 		padding: 5px;
 		margin: 5px;
 	}
-
-	ul {
-		position: relative;
-		padding: 0;
-		margin: 0;
-		height: 3em;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		list-style: none;
-		background: var(--background);
-		background-size: contain;
-	}
-
 
 	nav a, :global(.style-in-parent) {
 		display: flex;

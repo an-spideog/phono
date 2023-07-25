@@ -5,19 +5,30 @@
     import { _ } from "svelte-i18n";
   import HStack from "$lib/components/HStack.svelte"
   import Hoverable from "$lib/components/Hoverable.svelte"
+  import VStack from "$lib/components/VStack.svelte"
 
     export let tab: string;
     export let icon: string;
+    export let showText: 'false' | 'beside' | 'under' = 'beside';
 </script>
 
 <a aria-current={$page.url.pathname.includes(`/${tab}`) ? 'page' : undefined}
     href={resolvePath(`/[[language]]/${tab}`, $page.params)}>
-    <Hoverable --hover-color=var(--on-surface-variant)>
+    <Hoverable --hover-color=var(--on-surface-variant) enabled={!$page.url.pathname.includes(`/${tab}`)}>
         <div class=content>
+            {#if showText === 'beside'}
             <HStack --border-radius=2em>
                 <Icon name={icon}/>
                 {$_(tab)}
             </HStack>
+            {:else if showText === 'under'}
+            <VStack --align-items=center>
+                <Icon name={icon}/>
+                {$_(tab)}
+            </VStack>
+            {:else}
+            <Icon name={icon}/>
+            {/if}
         </div>
     </Hoverable>
 </a>
@@ -39,11 +50,12 @@
 
     a, a:visited, a:hover {
         border-radius: 2em;
+        background: none;
         overflow: hidden;
         color: inherit;
         font-weight: 700;
 		text-transform: uppercase;
-		font-size: 0.8rem;
+		font-size: 0.7rem;
         padding: 0;
     }
 

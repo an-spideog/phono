@@ -41,4 +41,9 @@
     input {
         float: right;
     }
+
+    select {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 </style>

@@ -9,12 +9,16 @@ import type { Track } from "$lib/types.js"
 
 export const load = async ({ params }) => {
   console.log("params.user: " + params.user)
-  let { user, tracks } = await getUser(params.user)
-  console.log(user)
+  let { user, tracks, expiredTracks } = await getUser(params.user)
+  console.log("LOAD DEBUG")
+  console.log("\ntracks")
   console.log(tracks)
+  console.log("\nexpiredTracks")
+  console.log(expiredTracks)
   return {
     user: user,
     userTracks: <Track[]>tracks,
+    expiredTracks: <Track[]>expiredTracks,
   }
 }
 

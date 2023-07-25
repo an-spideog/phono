@@ -1,10 +1,17 @@
 <script lang="ts">
   import type { Track, User } from "$lib/types"
-  import Button from "./Button.svelte"
   import Menu from "./Menu.svelte"
 
     export let track: Track;
     export let user: User;
+    export let isExpired = false;
+    console.log('isExpired on TLI: ' + isExpired);
+
+    function getExpiryDate(accessGranted: Date) {
+        const expiry = new Date();
+        expiry.setDate(accessGranted.getDate() + 7)
+        return expiry;
+    }
 </script>
 
 <div class=track-list-item>
@@ -13,11 +20,11 @@
             <span class=nickname>({track.ID}) {track.Nickname}</span>
             <span class=catalogue-entry>{track.CatalogueEntry}</span>
         </div>
-        <span class=expiry-date>Expires:{track.AccessGranted}</span>
+        <span class=expiry-date> {isExpired ? 'Caite ar' : 'Go dtí'}: {getExpiryDate(track.AccessGranted).toLocaleDateString('en-UK')}</span>
     </div>
 
     <div class=right>
-        <Menu {user} {track}/>
+        <Menu {user} {track} {isExpired}/>
     </div>
 </div>
 

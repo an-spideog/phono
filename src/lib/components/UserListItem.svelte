@@ -9,7 +9,7 @@
 
 <li>
   <a href='admin/{user.ID}'>
-    <Hoverable --hover-color='var(--on-surface)'>
+    <Hoverable --hover-color='var(--on-surface)' enabled={true}>
         <HStack --padding=20px>
         <VStack>
         <span class=email>

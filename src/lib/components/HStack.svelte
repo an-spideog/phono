@@ -4,6 +4,7 @@
 
 <style>
     .horizontal-stack {
+        grid-area: z-stack;
         display: flex;
         flex-direction: row;
         justify-content: var(--justify-content, space-between);

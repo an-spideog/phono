@@ -5,6 +5,8 @@
     let isOpen = false;
     export let track: Track;
     export let user: User;
+    export let isExpired: boolean;
+    console.log('is expired: ' + isExpired)
 </script>
 
 <svelte:window on:click={(e) => {
@@ -31,11 +33,13 @@
                 <input type='hidden' name='userId' value={user.ID}>
                 <button class=option>Renew</button>
             </form>
+            {#if !isExpired}
             <form method="POST" use:enhance action="?/remove">
                 <button class=option>X Revoke permission now</button>
                 <input type='hidden' name='trackId' value={track.ID}>
                 <input type='hidden' name='userId' value={user.ID}>
             </form>
+            {/if}
 
         </div>
     </div>
