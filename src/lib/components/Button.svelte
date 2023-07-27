@@ -1,5 +1,4 @@
 <script lang="ts">
-  import HStack from "./HStack.svelte"
     import Hoverable from "./Hoverable.svelte"
 
     export let type: 'primary' | 'secondary' | 'danger';
@@ -17,8 +16,6 @@
 
 
 <style>
-    /* How do button and the hoverable have different border radiuses?? */
-    /* because they're calculating from different like boxes, I think */
     button {
         background: none;
         border: none;

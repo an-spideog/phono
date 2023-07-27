@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { Collector } from '$lib/types';
-    import SearchBox from '../SearchBox.svelte';
+    import SearchBox from '../../../lib/components/SearchBox.svelte';
     import { _ } from 'svelte-i18n';
     import Pager from '../Pager.svelte'
   import SummaryBox from '../../../SummaryBox.svelte'

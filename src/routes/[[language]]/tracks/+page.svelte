@@ -2,7 +2,7 @@
     import type { Track } from '$lib/types';
     import { _ } from 'svelte-i18n';
     import Pager from '../Pager.svelte'
-    import SearchBox from '../SearchBox.svelte'
+    import SearchBox from '../../../lib/components/SearchBox.svelte'
     import SummaryBox from '../../../SummaryBox.svelte'
     export let data;
     let tracks: Track[];
@@ -10,6 +10,9 @@
     $: page = data.page;
     $: trackCount = data.hits;
     $: email = data.email;
+
+    console.log('ALlowed tracks')
+    console.log(data.allowedTrackIds)
 
     // This function finds the string of numbers before the letter
     // given in a track's nickname
@@ -67,7 +70,7 @@
             </li>
             <li>{$_('reels')}: <a href='reels?id={track.ReelID}'>{track.ReelID} {track.ReelTitle} </a></li>
         </ul>
-        {#if email}
+        {#if  data.isAdmin || data.allowedTrackIds.includes(track.ID)}
             <audio controls src="https://www.logainm.ie/phono/PHONO/{findInitialID(track.Nickname)}mp3s/{track.Nickname}.mp3"></audio>
         {:else}
             {$_('soundFileAvailableTo')}

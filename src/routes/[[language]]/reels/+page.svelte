@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { Reel } from '$lib/types';
   import Pager from '../Pager.svelte'
-    import SearchBox from '../SearchBox.svelte'
+    import SearchBox from '../../../lib/components/SearchBox.svelte'
     import { _ } from 'svelte-i18n';
     import SummaryBox from '../../../SummaryBox.svelte';
     export let data;

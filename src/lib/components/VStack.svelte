@@ -7,7 +7,7 @@
         display: flex;
         flex-direction: column;
         align-items: var(--align-items, start);
-        justify-content: var(--justify-content);
+        justify-content: var(--justify-content, space-between);
         height: 100%;
     }
 </style>

@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { Speaker } from '$lib/types';
     import { _ } from 'svelte-i18n';
-    import SearchBox from '../SearchBox.svelte'
+    import SearchBox from '../../../lib/components/SearchBox.svelte'
     import Pager from '../Pager.svelte'
   import SummaryBox from '../../../SummaryBox.svelte'
     export let data;

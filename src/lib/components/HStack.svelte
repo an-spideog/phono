@@ -7,6 +7,7 @@
         grid-area: z-stack;
         display: flex;
         flex-direction: row;
+        flex-wrap: var(--flex-wrap, nowrap);
         justify-content: var(--justify-content, space-between);
         align-items: center;
         align-content: center;

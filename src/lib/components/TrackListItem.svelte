@@ -5,7 +5,6 @@
     export let track: Track;
     export let user: User;
     export let isExpired = false;
-    console.log('isExpired on TLI: ' + isExpired);
 
     function getExpiryDate(accessGranted: Date) {
         const expiry = new Date();

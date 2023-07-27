@@ -170,8 +170,9 @@ export async function validateSession(sessionId: string) {
   ps.input("sessionId", sql.NVarChar(sql.MAX))
   ps.output("email", sql.NVarChar(sql.MAX))
   ps.output("isAdmin", sql.Bit)
+  ps.output("id", sql.NVarChar(sql.MAX))
   let queryText = `
-  SELECT @email=Email, @isAdmin=IsAdmin FROM ${USER_TABLE}
+  SELECT @id=ID, @email=Email, @isAdmin=IsAdmin FROM ${USER_TABLE}
   WHERE SessionID=@sessionId;
   `
   await ps.prepare(queryText)
@@ -180,6 +181,7 @@ export async function validateSession(sessionId: string) {
   return {
     email: executed.output.email,
     isAdmin: executed.output.isAdmin,
+    userId: executed.output.id,
   }
 }
 

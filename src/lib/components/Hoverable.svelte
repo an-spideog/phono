@@ -12,12 +12,18 @@
 
 <style>
     .hover-tint:hover {
-        background-color: var(--hover-color, --on-primary);
+        background-color: var(--hover-color, var(--on-surface));
         opacity: 0.08;
+    }
+
+    .hover-tint:active {
+        background-color: var(--hover-color, var(--on-surface));
+        opacity: 0.12;
     }
 
     div {
         width: 100%;
         height: 100%;
+        cursor: pointer;
     }
 </style>

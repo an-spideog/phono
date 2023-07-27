@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from "$app/forms"
+  import { clickOutside } from "$lib/actions"
   import type { Track, User } from "$lib/types"
 
     let isOpen = false;
@@ -9,13 +10,7 @@
     console.log('is expired: ' + isExpired)
 </script>
 
-<svelte:window on:click={(e) => {
-    if (isOpen && !e.target.matches('.option')) {
-        isOpen = false;   
-    }
-}}/>
-
-<div class=menu id=l2>
+<div class=menu id=l2 use:clickOutside on:click_outside={() => {isOpen = false}}>
     <div class=menu-switch>
         <!--Stop propogation here ensures that if the button is clicked, 
             the click doesn't also get applied to the window-->
@@ -67,7 +62,7 @@
         position: absolute;
         background: var(--surface-variant);
         top: 2em;
-        left: 0;
+        left: -100%;
         z-index: 300;
     }
     .option {
