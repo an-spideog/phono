@@ -1,25 +1,21 @@
 <script lang='ts'>
-    import { page } from "$app/stores";
-    import VStack from "$lib/components/VStack.svelte"
+    import Button from "$lib/components/Button.svelte"
+    import HStack from "$lib/components/HStack.svelte"
     import { _ } from "svelte-i18n";
+    import NavButton from "./NavButton.svelte";
     export let email: string;
 </script>
-
 {#if email}
-    <VStack>
-        <div>
-            You are logged in as: <b>{email}</b>
-        </div>
-        <form method='POST' action='login?/logout'>
-            <input type='submit' value='logout'>
-        </form>
-    </VStack>
+    <Button type=secondary  link=user-options>
+        <HStack --align-items=center>
+        Sonraí Úsáideora
+        </HStack>
+    </Button>
 {:else}
-    <a href='login'>{$_('login')}</a>
+    <Button type=secondary link=login>
+        Logáil Isteach 
+    </Button>
 {/if}
 
 <style>
-    * {
-        padding-left: 5px;
-    }
 </style>

@@ -16,5 +16,6 @@ export const load = async ({ params, data }) => {
     staticReels: data.staticReels,
     staticTracks: data.staticTracks,
     isAdmin: data.isAdmin,
+    userId: data.userId,
   }
 }

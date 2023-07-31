@@ -4,6 +4,8 @@
 
 <style>
     .z-stack {
+        height: fit-content;
+        width: fit-content;
         display: grid;
         grid-template-columns: 1fr;
         grid-template-rows: 1fr;

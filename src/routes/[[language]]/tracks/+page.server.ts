@@ -41,7 +41,9 @@ export const load = async ({ url, cookies }) => {
     jsons: result.jsons,
     page: page ?? 1,
     hits: result.hits,
-    email: email, // TODO: this is not good from a security perspective, I'm just mimicking the original site for now
+    email: email,
+
+    // TODO: this is not good from a security perspective, I'm just mimicking the original site for now
     allowedTrackIds: tracks.map((t: Track) => t.ID),
   }
 }

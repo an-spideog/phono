@@ -2,18 +2,34 @@
     import Hoverable from "./Hoverable.svelte"
 
     export let type: 'primary' | 'secondary' | 'danger';
+    export let enabled = true;
+    export let link = "";
+    let hoverColor: string;
+    if (type === 'primary') {
+        hoverColor = 'var(--on-primary)'
+    } else if (type === 'secondary') {
+        hoverColor = 'var(--on-secondary-container)'
+    }
+    
 </script>
 
-
-<button on:click>
-    <Hoverable --hover-color=var(--on-primary)>
-        <div class='button-content {type}'>
-
+{#if link}
+<a href={link}>
+    <Hoverable --hover-color={hoverColor} {enabled}>
+        <div class='button-content {type} {enabled ? 'enabled' : 'disabled'}'>
+            <slot/>
+        </div>
+    </Hoverable>
+</a>
+{:else}
+<button on:click disabled={!enabled}>
+    <Hoverable --hover-color={hoverColor} {enabled}>
+        <div class='button-content {type} {enabled ? 'enabled' : 'disabled'}'>
             <slot/>
         </div>
     </Hoverable>
 </button>
-
+{/if}
 
 <style>
     button {
@@ -26,7 +42,8 @@
 
     .button-content {
         padding: 1.2em 2em;
-        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
         margin: inherit;
     }
 
@@ -49,5 +66,15 @@
         color: var(--error);
     }
 
+    .disabled {
+        filter: saturate(0);
+    }
 
+    a, a:hover, a:active {
+        text-decoration: none;
+        padding: 0;
+        margin: 0;
+        border-radius: 1000px;
+        overflow: hidden;
+    }
 </style>

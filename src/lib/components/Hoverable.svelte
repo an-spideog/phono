@@ -14,6 +14,7 @@
     .hover-tint:hover {
         background-color: var(--hover-color, var(--on-surface));
         opacity: 0.08;
+        cursor: pointer;
     }
 
     .hover-tint:active {
@@ -24,6 +25,5 @@
     div {
         width: 100%;
         height: 100%;
-        cursor: pointer;
     }
 </style>

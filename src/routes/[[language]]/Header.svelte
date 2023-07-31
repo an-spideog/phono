@@ -11,25 +11,28 @@
 </script>
 
 <header>
-	<LoginPanel {email}/>
+	<HStack --justify-content=space-between --align-content=center --align-items=center --padding='0em 1em'>
+		<NavButton tab={email ? 'user-options' : 'login'} text={email ? 'Profile' : 'Login'} showText="beside" icon="account_circle"/>
 		<nav>
-		{#if !$isLoading}
-		<ul>
-			{#if isAdmin}
-				<NavButton tab=admin icon=shield/>
-			{/if}
+			<ul>
+				{#if isAdmin}
+					<NavButton tab=admin icon=shield/>
+				{/if}
 
-			<NavButton tab=introduction icon=note/>
-			<NavButton tab=reels icon=folder/>
-			<NavButton tab=tracks icon=speaker/>
-			<NavButton tab=speakers icon=face/>
-			<NavButton tab=collectors icon=mic/>
-		</ul>
-		{/if}
-	</nav>
-		
-	<a class='language-button' data-sveltekit-preload-data=off href={resolvePath($page.route.id ?? '', {...$page.params, language: 'en'})}> English </a>
-	<a class='language-button' data-sveltekit-preload-data=off href={resolvePath($page.route.id ?? '', {...$page.params, language: 'ga'})}> Irish </a>
+				<NavButton tab=introduction icon=note/>
+				<NavButton tab=reels icon=folder/>
+				<NavButton tab=tracks icon=speaker/>
+				<NavButton tab=speakers icon=face/>
+				<NavButton tab=collectors icon=mic/>
+			</ul>
+		</nav>
+	
+		<div class=language-buttons>
+			<a class='language-button' data-sveltekit-preload-data=off href={resolvePath($page.route.id ?? '', {...$page.params, language: 'en'})}> English </a>
+			<a class='language-button' data-sveltekit-preload-data=off href={resolvePath($page.route.id ?? '', {...$page.params, language: 'ga'})}> Irish </a>
+		</div>
+
+	</HStack>
 </header>
 
 <style>
@@ -37,11 +40,9 @@
 		width: 100%;
 		height: 100%;
 		background: var(--surface-variant);
-		display: flex;
 		padding: 0;
 		margin: 0;
 		z-index: 3;
-		justify-content: space-between;
 	}
 
 	@media screen and (max-width: 1000px) {

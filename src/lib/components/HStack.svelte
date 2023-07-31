@@ -13,5 +13,6 @@
         align-content: center;
         padding: var(--padding, 0);
         border-radius: var(--border-radius, 0);
+        height: 100%;
     }
 </style>

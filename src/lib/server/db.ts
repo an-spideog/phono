@@ -3,6 +3,7 @@ import { DB_USER, DB_PASSWORD, DB_SERVER, DB_NAME } from "$env/static/private"
 import { MAX_PER_PAGE } from "$lib/globals"
 import { v4 as uuid } from "uuid"
 
+const timeout = 120_000_000
 const settings: sql.config = {
   user: DB_USER,
   password: DB_PASSWORD,
@@ -13,11 +14,53 @@ const settings: sql.config = {
   },
   requestTimeout: 100000,
   connectionTimeout: 100000,
+  pool: {
+    max: 1000,
+    min: 1,
+    idleTimeoutMillis: timeout,
+    acquireTimeoutMillis: timeout,
+    createTimeoutMillis: timeout,
+    destroyTimeoutMillis: timeout,
+    reapIntervalMillis: timeout,
+    createRetryIntervalMillis: timeout,
+  },
 }
 
 const USER_TABLE = "tblTestUsers3"
 
 const pool = await sql.connect(settings)
+
+export async function changePassword(
+  userId: number,
+  currentPassword: string,
+  newPassword: string
+) {
+  const ps = new sql.PreparedStatement(pool)
+  ps.input("userId", sql.Int)
+  ps.input("currentPassword", sql.VarChar(sql.MAX))
+  ps.input("newPassword", sql.VarChar(sql.MAX))
+  await ps.prepare(`
+    UPDATE ${USER_TABLE}
+    SET PasswordHash=HASHBYTES('sha1', @newPassword)
+    WHERE @userId=ID AND HASHBYTES('sha1', @currentPassword)=PasswordHash;
+  `)
+  let request = await ps.execute({ userId, currentPassword, newPassword })
+  console.log(
+    "\nuserID:",
+    userId,
+    "\ncurrentPassword:",
+    currentPassword,
+    "\nnewPassword:",
+    newPassword
+  )
+  if (!request.rowsAffected[0]) {
+    console.log("Rows Affected", request.rowsAffected)
+    throw new Error("incorrect password")
+  } else {
+    console.log("Rows Affected", request.rowsAffected)
+  }
+  await ps.unprepare()
+}
 
 export async function renewTrackForUser(trackId: number, userId: number) {
   const ps = new sql.PreparedStatement(pool)

@@ -8,6 +8,7 @@
   import VStack from "$lib/components/VStack.svelte"
 
     export let tab: string;
+    export let text = "";
     export let icon: string;
     export let showText: 'false' | 'beside' | 'under' = 'beside';
 </script>
@@ -19,7 +20,7 @@
             {#if showText === 'beside'}
             <HStack --border-radius=2em>
                 <Icon name={icon}/>
-                {$_(tab)}
+                {$_(text || tab)}
             </HStack>
             {:else if showText === 'under'}
             <VStack --align-items=center>
