@@ -8,6 +8,7 @@
         flex-direction: column;
         align-items: var(--align-items, start);
         justify-content: var(--justify-content, space-between);
-        height: 100%;
+        height: var(--v-stack-height, fit-content);
+        width: var(--v-stack-width, fit-content);
     }
 </style>

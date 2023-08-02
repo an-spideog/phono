@@ -1,6 +1,5 @@
 import {
   getTracks,
-  getTracksWithoutSound,
   getUser,
   validateSession,
 } from "$lib/server/db"

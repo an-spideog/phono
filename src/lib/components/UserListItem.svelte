@@ -10,31 +10,28 @@
 <li>
   <a href='admin/{user.ID}'>
     <Hoverable --hover-color='var(--on-surface)' enabled={true}>
-        <HStack --padding=20px>
-        <VStack>
-        <span class=email>
-          {user.Email}
-        </span>
-        <span class=role>
-          {user.IsAdmin ? 'Riarthóir' : 'Úsáideoir'}
-        </span>
-      </VStack>
+        <HStack --h-stack-width=100% --h-stack-justify-content=space-between --h-stack-padding='20px'>
+          <VStack --justify-content=start --width=fit-content>
+            <span class=email>
+              {user.Email}
+            </span>
+            <span class=role>
+              {user.IsAdmin ? 'Riarthóir' : 'Úsáideoir'}
+            </span>
+          </VStack>
 
-      <VStack>
-        {#if user.IsAdmin}
-          gach traic
-        {:else if !user.TrackCount}
-          gan aon traic
-        {:else}
-        {user.TrackCount} traic
-        {/if}
-      </VStack>
-
-
+          <VStack --width=fit-content>
+            {#if user.IsAdmin}
+              gach traic
+            {:else if !user.TrackCount}
+              gan aon traic
+            {:else}
+            {user.TrackCount} traic
+            {/if}
+          </VStack>
         </HStack>
-      
-          </Hoverable>
-        </a>
+      </Hoverable>
+    </a>
 </li>
 
 <style>
@@ -51,6 +48,9 @@
   a, a:visited, a:hover {
     text-decoration: none;
     color: var(--on-surface-variant);
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
   }
   .content {
     display: flex;

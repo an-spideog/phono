@@ -27,8 +27,66 @@ const settings: sql.config = {
 }
 
 const USER_TABLE = "tblTestUsers3"
+const DAYS_FOR_TRACK_TO_EXPIRE = 7
+const DAYS_FOR_TRACK_TO_BE_HIDDEN_FROM_ADMIN = 14
+const DAYS_FOR_OTP_TO_EXPIRE = 7
+const ABSOLUTE_ADDRESS = "localhost:5173"
 
 const pool = await sql.connect(settings)
+
+export async function generateOneTimePassword(userId: number) {
+  const otp = uuid()
+
+  const ps = new sql.PreparedStatement(pool)
+  ps.input("userId", sql.Int)
+  ps.input("otp", sql.NVarChar(sql.MAX))
+  await ps.prepare(`
+    UPDATE ${USER_TABLE}
+    SET OTP=@otp, OTPGenerated=SYSDATETIME()
+    WHERE ID=@userId
+  `)
+  let request = await ps.execute({ userId, otp })
+  await ps.unprepare()
+}
+
+export async function checkIfOTPExists(otp: string) {
+  const ps = new sql.PreparedStatement(pool)
+  ps.input("otp", sql.NVarChar(sql.MAX))
+  await ps.prepare(`
+    SELECT Email FROM ${USER_TABLE}
+    WHERE OTP=@otp;
+  `)
+  let request = await ps.execute({ otp })
+  await ps.unprepare()
+  if (request.recordset.length) {
+    return request.recordset[0].Email
+  }
+}
+
+export async function setPasswordUsingOTP(newPassword: string, otp: string) {
+  console.log("function started")
+  const ps = new sql.PreparedStatement(pool)
+  ps.input("otp", sql.VarChar(sql.MAX))
+  ps.input("newPassword", sql.VarChar(sql.MAX))
+  console.log("inputs set")
+  await ps.prepare(`
+    UPDATE ${USER_TABLE}
+    SET PasswordHash=HASHBYTES('sha1', @newPassword), OTP=null, OTPGenerated=null
+    WHERE @otp=OTP AND DateDIFF(DAY, OTPGenerated, SYSDATETIME()) <= ${DAYS_FOR_OTP_TO_EXPIRE};
+  `)
+  console.log("request prepared")
+  let request = await ps.execute({ otp, newPassword })
+  console.log("request executed")
+  if (!request.rowsAffected[0]) {
+    console.log("Rows Affected", request.rowsAffected)
+    throw new Error(
+      "This link is incorrect or expired, please make sure you copied it correctly or request another one"
+    )
+  } else {
+    console.log("Rows Affected", request.rowsAffected)
+  }
+  await ps.unprepare()
+}
 
 export async function changePassword(
   userId: number,
@@ -110,21 +168,20 @@ export async function addTracksToUser(trackIds: string[], userId: number) {
   await ps.unprepare()
 }
 
-export async function createUser(
-  email: string,
-  password: string,
-  isAdmin: boolean = false
-) {
+export async function createUser(email: string, isAdmin: boolean = false) {
+  const otp = uuid()
+
   const ps = new sql.PreparedStatement(pool)
   ps.input("email", sql.NVarChar(sql.MAX))
-  ps.input("password", sql.VarChar(sql.MAX))
+  ps.input("otp", sql.VarChar(sql.MAX))
   ps.input("isAdmin", sql.Bit)
   await ps.prepare(`
-    INSERT INTO ${USER_TABLE} (Email, PasswordHash, IsAdmin)
-    VALUES (@email, HASHBYTES('sha1', @password), @isAdmin)
+    INSERT INTO ${USER_TABLE} (Email, IsAdmin, OTP, OTPGenerated)
+    VALUES (@email, @isAdmin, @otp, SYSDATETIME())
   `)
-  await ps.execute({ email, password, isAdmin })
+  await ps.execute({ email, otp, isAdmin })
   await ps.unprepare()
+  return ABSOLUTE_ADDRESS + "/set-password?otp=" + otp
 }
 
 export async function getUser(id: string) {

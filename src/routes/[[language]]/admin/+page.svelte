@@ -3,8 +3,9 @@
     import Button from "../../../lib/components/Button.svelte";
     import UserList from "$lib/components/UserList.svelte"
     export let data;
+    export let form;
     let searchText = ''
-    let isModalOpen: boolean = false;
+    let isModalOpen: boolean = form?.link ? true : false;
 </script>
 
 <h1>Úsáideoirí</h1>
@@ -25,6 +26,9 @@
         Riarthóir: <input type='checkbox' name='isAdmin'>
         <Button type=primary>Cruthaigh Úsáideoir</Button>
     </form>
+    {#if form?.link}
+    Send this link to the user to set their password: {form.link}
+    {/if}
 </Modal>
 
 <style>

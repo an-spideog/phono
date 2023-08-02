@@ -3,7 +3,7 @@
   export let enabled = true;
 </script>
 
-<ZStack>
+<ZStack --z-stack-height=100% --z-stack-width=100%>
     <slot/>
     {#if enabled}
         <div class=hover-tint></div>

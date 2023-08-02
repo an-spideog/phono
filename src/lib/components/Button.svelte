@@ -38,6 +38,7 @@
         padding: 0;
         border-radius: 800px;
         overflow: hidden;
+        margin: 1em;
     }
 
     .button-content {
@@ -73,7 +74,7 @@
     a, a:hover, a:active {
         text-decoration: none;
         padding: 0;
-        margin: 0;
+        margin: 1em;
         border-radius: 1000px;
         overflow: hidden;
     }

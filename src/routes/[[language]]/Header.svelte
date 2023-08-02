@@ -2,16 +2,14 @@
 	import { page } from '$app/stores';
 	import { _, isLoading, locale } from 'svelte-i18n';
 	import { resolvePath } from '@sveltejs/kit'
-	import LoginPanel from './LoginPanel.svelte';
 	import HStack from '$lib/components/HStack.svelte'
-	import Icon from '$lib/components/Icon.svelte'
 	import NavButton from './NavButton.svelte'
 	export let email: string;
 	export let isAdmin: boolean;
 </script>
 
 <header>
-	<HStack --justify-content=space-between --align-content=center --align-items=center --padding='0em 1em'>
+	<HStack --h-stack-width=100% --h-stack-height=100% --h-stack-align-content=center --h-stack-align-items=center --h-stack-padding='0em 1em'>
 		<NavButton tab={email ? 'user-options' : 'login'} text={email ? 'Profile' : 'Login'} showText="beside" icon="account_circle"/>
 		<nav>
 			<ul>

@@ -13,8 +13,11 @@ export const actions = {
     const email = String(data.get("email"))
     const password = String(data.get("password"))
     const isAdmin = Boolean(data.get("isAdmin"))
-    if (email && password) {
-      createUser(email, password, isAdmin)
+    if (email) {
+      let link = await createUser(email, isAdmin)
+      return {
+        link,
+      }
     }
   },
 }

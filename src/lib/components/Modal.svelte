@@ -1,4 +1,7 @@
 <script lang="ts">
+  import Hoverable from "./Hoverable.svelte"
+  import Icon from "./Icon.svelte"
+
     export let isOpen: boolean=false;
     export let title: string;
 </script>
@@ -8,7 +11,11 @@
     <div class=modal>
         <div class=title-line>
             {title}
-            <button on:click={() => isOpen = false}><span class=material-icons/></button>
+            <button on:click={() => isOpen = false}>
+                <Hoverable>
+                    <Icon name=close/>
+                </Hoverable>
+            </button>
         </div>
         <slot/>
     </div>
