@@ -1,9 +1,9 @@
 <script lang="ts">
     import type { Track } from '$lib/types';
     import { _ } from 'svelte-i18n';
-    import Pager from '../Pager.svelte'
+    import Pager from '../../../lib/components/Pager.svelte'
     import SearchBox from '../../../lib/components/SearchBox.svelte'
-    import SummaryBox from '../../../SummaryBox.svelte'
+    import SummaryBox from '../../../lib/components/SummaryBox.svelte'
     export let data;
     let tracks: Track[];
     $: tracks = data.jsons;
@@ -42,25 +42,34 @@
 
 <span>{$_('numberOfTracks')}: {trackCount}</span>
 
+<Pager page={page} count={trackCount} />
+
 <!--TODO: Make a component out of these display boxes so I can handle optional fields more simply-->
 {#each tracks as track}
     <SummaryBox>
-        <h2>{track.CatalogueEntry}</h2>
+        <h2 slot=title>#{track.ID} {track.CatalogueEntry}</h2>
+        <div slot=body>
         <ul>
-            <li>{$_('id')} : {track.ID} </li>
+            {#if track.Nickname}
             <li> {$_('nickname')} : {track.Nickname}</li>
+            {/if}
+            {#if track.RecordingDate}
             <li> {$_('recordingDate')} : {track.RecordingDate}</li>
+            {/if}
+            {#if track.CollectorIDs}
             <li>{$_('collector')}: 
-                <ul>
-            {#each track.CollectorIDs?.split(',') ?? [] as collectorId, i}
-                <li>
-                    <a href='collectors?id={collectorId}'>{collectorId + ' ' + track.CollectorNames?.split(',')[i]}</a>
-                </li>
-            {/each}
+                <ul class='list-inside list-disc'>
+                    {#each track.CollectorIDs?.split(',') ?? [] as collectorId, i}
+                        <li>
+                            <a href='collectors?id={collectorId}'>{collectorId + ' ' + track.CollectorNames?.split(',')[i]}</a>
+                        </li>
+                    {/each}
                 </ul>
             </li>
+            {/if}
+            {#if track.PlaceIDs}
             <li>{$_('places')}:
-                <ul>
+                <ul class='list-inside list-disc'>
                 {#each track.PlaceIDs?.split(',') ?? [] as placeId, i}
                     <li>
                         <a href='//logainm.ie/{placeId}.aspx'>{placeId} {track.PlaceNames?.split(',')[i]}</a>
@@ -68,13 +77,15 @@
                 {/each}
                 </ul>
             </li>
-            <li>{$_('reels')}: <a href='reels?id={track.ReelID}'>{track.ReelID} {track.ReelTitle} </a></li>
+            {/if}
+            <li>{$_('reel')}: <a href='reels?id={track.ReelID}'>{track.ReelID} {track.ReelTitle} </a></li>
         </ul>
         {#if  data.isAdmin || data.allowedTrackIds.includes(track.ID)}
             <audio controls src="https://www.logainm.ie/phono/PHONO/{findInitialID(track.Nickname)}mp3s/{track.Nickname}.mp3"></audio>
         {:else}
             {$_('soundFileAvailableTo')}
         {/if}
+        </div>
     </SummaryBox>
 {/each}
 

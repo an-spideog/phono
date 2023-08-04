@@ -3,6 +3,7 @@
 
     export let type: 'primary' | 'secondary' | 'danger';
     export let enabled = true;
+    export let preload = true;
     export let link = "";
     let hoverColor: string;
     if (type === 'primary') {
@@ -14,7 +15,8 @@
 </script>
 
 {#if link}
-<a href={link}>
+<!--TODO: the link breaks all the css for some reason, i have no idea why, it is baffling-->
+<a href={link} data-sveltekit-preload-data={preload ? true : 'off'}>
     <Hoverable --hover-color={hoverColor} {enabled}>
         <div class='button-content {type} {enabled ? 'enabled' : 'disabled'}'>
             <slot/>
@@ -32,13 +34,14 @@
 {/if}
 
 <style>
-    button {
+    button, a {
         background: none;
         border: none;
         padding: 0;
+        width: var(--button-width);
         border-radius: 800px;
         overflow: hidden;
-        margin: 1em;
+        margin: var(--button-margin, 1em);
     }
 
     .button-content {
@@ -69,13 +72,5 @@
 
     .disabled {
         filter: saturate(0);
-    }
-
-    a, a:hover, a:active {
-        text-decoration: none;
-        padding: 0;
-        margin: 1em;
-        border-radius: 1000px;
-        overflow: hidden;
     }
 </style>

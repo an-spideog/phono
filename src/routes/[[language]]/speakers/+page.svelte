@@ -2,8 +2,8 @@
     import type { Speaker } from '$lib/types';
     import { _ } from 'svelte-i18n';
     import SearchBox from '../../../lib/components/SearchBox.svelte'
-    import Pager from '../Pager.svelte'
-  import SummaryBox from '../../../SummaryBox.svelte'
+    import Pager from '../../../lib/components/Pager.svelte'
+  import SummaryBox from '../../../lib/components/SummaryBox.svelte'
     export let data;
     let speakers: Speaker[];
     $: speakers = data.jsons;
@@ -16,10 +16,13 @@
 
 <span>{$_('numberOfSpeakers')}: {speakerCount}</span>
 
+<Pager page={page} count={speakerCount} />
+
 <!--TODO: Make a component out of these display boxes so I can handle optional fields more simply-->
 {#each speakers as speaker}
     <SummaryBox>
-        <h2>{speaker.ID.toString() + " " + speaker.FullName + ` (${$_('gender')}: ` + (speaker.Gender ==='fem' ? $_('female') : $_('male')) + ')' }</h2>
+        <h2 slot=title>{speaker.ID.toString() + " " + speaker.FullName + ` (${$_('gender')}: ` + (speaker.Gender ==='fem' ? $_('female') : $_('male')) + ')' }</h2>
+        <div slot=body>
         <ul>
             {#if speaker.FirstName}
                 <li>{$_('firstSpeaker')}: {speaker.FirstName}</li>
@@ -44,6 +47,7 @@
             {/if}
         </ul>
         <a href="tracks?speakerId={speaker.ID}">{$_('tracks')} ({speaker.TrackCount})</a>
+        </div>
     </SummaryBox>
 {/each}
 

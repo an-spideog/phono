@@ -8,17 +8,16 @@
     let isPopupOpen = false;
     export let placeholder: string; 
     export let name: string;
-
-
 </script>
 
+<!--TODO: clicking on elements doesn't work-->
 <div class=popup-container use:clickOutside on:click_outside={() => isPopupOpen = false}>
     <input {name} id={name}
+            autocomplete="off"
             {placeholder} on:click|stopPropagation bind:value={filterText} 
-            on:focus={() => isPopupOpen = true} on:blur={() => {
-                if (isPopupOpen) {
-                    isPopupOpen = false;
-                }
+            on:focus={() => {
+                isPopupOpen = true 
+                filterText=""
             }}>
     {#if isPopupOpen}
     <div class=results>
@@ -27,8 +26,8 @@
                 {#if option.Title?.toLowerCase().includes(filterText.toLowerCase())}
                 <li class=option>
                         <button class=option on:click|stopPropagation={() => {
-                            isPopupOpen = false;
                             filterText = String(option.ID);
+                            isPopupOpen = false;
                         }}>
                         <Hoverable>
                             <div class=content>

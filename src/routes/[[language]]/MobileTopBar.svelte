@@ -1,13 +1,14 @@
 <script lang="ts">
   import HStack from "$lib/components/HStack.svelte";
+  import Icon from "$lib/components/Icon.svelte"
 	export let email: string;
 </script>
 
 <header>
-  <HStack>
+  <HStack --h-stack-width=100%>
     <div class="logo-or-name">Phono</div>
 
-    <a href="/login">{email ? 'Logout' : 'Login'}</a>
+    <a href='user-options'><Icon name='account_circle'/></a>
   </HStack>
 </header>
 

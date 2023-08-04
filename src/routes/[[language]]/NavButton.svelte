@@ -3,9 +3,9 @@
     import { resolvePath } from "@sveltejs/kit";
     import Icon from "$lib/components/Icon.svelte";
     import { _ } from "svelte-i18n";
-  import HStack from "$lib/components/HStack.svelte"
-  import Hoverable from "$lib/components/Hoverable.svelte"
-  import VStack from "$lib/components/VStack.svelte"
+    import HStack from "$lib/components/HStack.svelte"
+    import Hoverable from "$lib/components/Hoverable.svelte"
+    import VStack from "$lib/components/VStack.svelte"
 
     export let tab: string;
     export let text = "";
@@ -56,7 +56,7 @@
         color: inherit;
         font-weight: 700;
 		text-transform: uppercase;
-		font-size: 0.7rem;
+		font-size: inherit;
         padding: 0;
     }
 

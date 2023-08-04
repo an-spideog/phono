@@ -5,7 +5,7 @@
     import HStack from '$lib/components/HStack.svelte';
     import VStack from '$lib/components/VStack.svelte';
     import Icon from '$lib/components/Icon.svelte';
-    import SummaryBox from '../../../SummaryBox.svelte';
+    import SummaryBox from '../../../lib/components/SummaryBox.svelte';
 
     export let data
     function findInitialID(nickname: string) {

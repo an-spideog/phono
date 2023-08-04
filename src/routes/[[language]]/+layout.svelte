@@ -1,5 +1,5 @@
 <script lang>
-	import Header from './Header.svelte';
+	import Header from '$lib/components/Header.svelte';
 	import { isLoading } from 'svelte-i18n';
 	import './styles.css';
 	import NavBarBottom from './MobileBottomBar.svelte'

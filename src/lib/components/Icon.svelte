@@ -8,6 +8,6 @@
 
 <style>
     span {
-        /*padding: 0.3em;*/
+        font-size: var(--font-size);
     }
 </style>
