@@ -4,6 +4,7 @@
     import { page } from "$app/stores";
     import { resolvePath } from "@sveltejs/kit";
   import NavButton from "../../routes/[[language]]/NavButton.svelte"
+  import Hoverable from "./Hoverable.svelte"
 </script>
 
 <header>
@@ -36,8 +37,11 @@
                 English
             </Button>
         </div>
-        <NavButton tab=user-options icon=account_circle showText='false'/>
-        <Icon name=account_circle/>
+        <a href=account class='flex align-center rounded overflow-hidden'>
+            <Hoverable>
+                <Icon name=account_circle/>
+            </Hoverable>
+        </a>
     </div>
 </header>
 

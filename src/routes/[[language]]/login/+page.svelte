@@ -1,24 +1,34 @@
 <script lang='ts'>
     export let data;
+    import NewButton from '$lib/components/NewButton.svelte'
     import { _ } from 'svelte-i18n';
-    $: email = data.email
 </script>
 
-{#if !email}
+{#if !data.email}
 <h1>{$_('login')}</h1>
-<form method='POST' action='?/login'>
-    {$_('email')}: <input name='email'>
-    {$_('password')}: <input type='password' name='password'/>
-    <input type='submit' value={$_('logIn')}>
-    <a href='https://www.gaois.ie/identity/ga/logainm-phono/'>
+<form method='POST' action='?/login' class='flex-row gap-2'>
+    <label for=email class='block pb-2'>
+        {$_('email')}: <input name='email'>
+    </label>
+    <label for=password class='block pb-2'>
+        {$_('password')}: <input type='password' name='password'/>
+    </label>
+    <div>
+        <NewButton>
+            Submit
+        </NewButton>
+    </div>
+    <a class='text-blue-800' href='https://www.gaois.ie/identity/ga/logainm-phono/'>
         {$_('forgottenPassword')}
     </a>
 </form>
 
 {:else}
-<h2>{$_('loggedInAs')}: {email}</h2>
+<h2>{$_('loggedInAs')}: {data.email}</h2>
 
 <form method='POST' action='?/logout'>
-    <input type='submit' value={$_('logOut')}>
+    <NewButton>
+        {$_('logOut')}
+    </NewButton>
 </form>
 {/if}

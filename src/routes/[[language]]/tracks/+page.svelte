@@ -72,16 +72,16 @@
                 <ul class='list-inside list-disc'>
                 {#each track.PlaceIDs?.split(',') ?? [] as placeId, i}
                     <li>
-                        <a href='//logainm.ie/{placeId}.aspx'>{placeId} {track.PlaceNames?.split(',')[i]}</a>
+                        <a class='text-blue-800' href='//logainm.ie/{placeId}.aspx'>{placeId} {track.PlaceNames?.split(',')[i]}</a>
                     </li>
                 {/each}
                 </ul>
             </li>
             {/if}
-            <li>{$_('reel')}: <a href='reels?id={track.ReelID}'>{track.ReelID} {track.ReelTitle} </a></li>
+            <li>{$_('reel')}: <a class='text-blue-800' href='reels?id={track.ReelID}'>{track.ReelID} {track.ReelTitle} </a></li>
         </ul>
         {#if  data.isAdmin || data.allowedTrackIds.includes(track.ID)}
-            <audio controls src="https://www.logainm.ie/phono/PHONO/{findInitialID(track.Nickname)}mp3s/{track.Nickname}.mp3"></audio>
+            <audio class='text-blue-800 rounded' controls src="https://www.logainm.ie/phono/PHONO/{findInitialID(track.Nickname)}mp3s/{track.Nickname}.mp3"></audio>
         {:else}
             {$_('soundFileAvailableTo')}
         {/if}

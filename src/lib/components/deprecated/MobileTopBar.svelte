@@ -8,7 +8,7 @@
   <HStack --h-stack-width=100%>
     <div class="logo-or-name">Phono</div>
 
-    <a href='user-options'><Icon name='account_circle'/></a>
+    <a href='account'><Icon name='account_circle'/></a>
   </HStack>
 </header>
 

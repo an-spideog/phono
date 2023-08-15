@@ -50,7 +50,7 @@
                 {form.error}
             </p>
         {:else if form?.success}
-            <p class="success">Socraíodh do phasfhocal. Logáil isteach <a href=login>anseo</a></p>
+            <p class="success">Socraíodh do phasfhocal. Logáil isteach <a class=text-blue-800 href=login>anseo</a></p>
         {/if}
     </VStack>
 </form>

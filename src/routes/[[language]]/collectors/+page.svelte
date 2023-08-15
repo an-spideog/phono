@@ -26,7 +26,7 @@
                 <li>{$_('firstName')}: {collector.FirstName}</li>
                 <li>{$_('lastName')}: {collector.LastName}</li>
             </ul>
-            <a href="reels?collectorId={collector.ID}">{$_('reels')} ({collector.ReelCount})</a>
+            <a class='text-blue-800' href="reels?collectorId={collector.ID}">{$_('reels')} ({collector.ReelCount})</a>
         </div>
 </SummaryBox>
 {/each}

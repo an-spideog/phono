@@ -42,5 +42,6 @@
   "login": "Logáil isteach",
   "loggedInAs": "Tá tú logáilte isteach mar",
   "forgottenPassword": "Pasfhocal Dearmadta?",
-  "logOut": "Logáil amach"
+  "logOut": "Logáil amach",
+  "admin": "Riarthóir"
 }

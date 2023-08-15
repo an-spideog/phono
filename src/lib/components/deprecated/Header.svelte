@@ -3,14 +3,14 @@
 	import { _, isLoading, locale } from 'svelte-i18n';
 	import { resolvePath } from '@sveltejs/kit'
 	import HStack from '$lib/components/HStack.svelte'
-	import NavButton from './NavButton.svelte'
+	import NavButton from '../../../routes/[[language]]/NavButton.svelte'
 	export let email: string;
 	export let isAdmin: boolean;
 </script>
 
 <header>
 	<HStack --h-stack-width=100% --h-stack-height=100% --h-stack-align-content=center --h-stack-align-items=center --h-stack-padding='0em 1em'>
-		<NavButton tab={email ? 'user-options' : 'login'} text={email ? 'Profile' : 'Login'} showText="beside" icon="account_circle"/>
+		<NavButton tab={email ? 'account' : 'login'} text={email ? 'Profile' : 'Login'} showText="beside" icon="account_circle"/>
 		<nav>
 			<ul>
 				{#if isAdmin}

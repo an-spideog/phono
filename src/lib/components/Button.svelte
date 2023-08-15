@@ -16,7 +16,7 @@
 
 {#if link}
 <!--TODO: the link breaks all the css for some reason, i have no idea why, it is baffling-->
-<a href={link} data-sveltekit-preload-data={preload ? true : 'off'}>
+<a href={link} data-sveltekit-preload-data={preload ? true : 'off'} class=rounded>
     <Hoverable --hover-color={hoverColor} {enabled}>
         <div class='button-content {type} {enabled ? 'enabled' : 'disabled'}'>
             <slot/>
@@ -24,9 +24,9 @@
     </Hoverable>
 </a>
 {:else}
-<button on:click disabled={!enabled}>
+<button on:click disabled={!enabled} class='rounded'>
     <Hoverable --hover-color={hoverColor} {enabled}>
-        <div class='button-content {type} {enabled ? 'enabled' : 'disabled'}'>
+        <div class='bg-blue-800 button-content {type} {enabled ? 'enabled' : 'disabled'}'>
             <slot/>
         </div>
     </Hoverable>
@@ -39,7 +39,6 @@
         border: none;
         padding: 0;
         width: var(--button-width);
-        border-radius: 800px;
         overflow: hidden;
         margin: var(--button-margin, 1em);
     }
@@ -52,7 +51,6 @@
     }
 
     .primary {
-        background: var(--primary);
         color: var(--on-primary);
         border: none;
         font-weight: bold;

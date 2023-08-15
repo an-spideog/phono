@@ -46,7 +46,7 @@
                 <li>{$_('remark')} : {speaker.Remark}</li>
             {/if}
         </ul>
-        <a href="tracks?speakerId={speaker.ID}">{$_('tracks')} ({speaker.TrackCount})</a>
+        <a class='text-blue-800' href="tracks?speakerId={speaker.ID}">{$_('tracks')} ({speaker.TrackCount})</a>
         </div>
     </SummaryBox>
 {/each}

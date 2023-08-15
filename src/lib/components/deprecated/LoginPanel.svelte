@@ -6,7 +6,7 @@
     export let email: string;
 </script>
 {#if email}
-    <Button type=secondary  link=user-options>
+    <Button type=secondary  link='account'>
         <HStack --align-items=center>
         Sonraí Úsáideora
         </HStack>

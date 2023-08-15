@@ -42,5 +42,6 @@
   "login": "Login",
   "loggedInAs": "You are logged in as",
   "forgottenPassword": "Forgotten Password",
-  "logOut": "Log out"
+  "logOut": "Log out",
+  "admin": "Admin"
 }

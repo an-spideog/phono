@@ -58,7 +58,6 @@
         width: 100%;
     }
     input {
-        padding: 5px;
         border: 1px var(--on-surface) solid;
         max-width: 100%;
         box-sizing: border-box;
@@ -73,11 +72,11 @@
         background: var(--surface);
         border: 1px var(--on-surface) solid;
         position: absolute;
+        z-index: 5;
         max-height: 8em;
         overflow: scroll;
         box-sizing: border-box;
         top: 100%;
-        z-index: 10;
         left: 0;
         width: 100%;
     }

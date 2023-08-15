@@ -1,5 +1,6 @@
 import {
   addTracksToUser,
+  generateOneTimePassword,
   getUser,
   removeTrackFromUser,
 } from "$lib/server/db.js"
@@ -41,5 +42,13 @@ export const actions = {
     console.log("trackIds: ", trackIds)
     const userId = Number(data.get("userId"))
     addTracksToUser(trackIds, userId)
+  },
+  resetPassword: async ({ request }) => {
+    const data = await request.formData()
+    const userId = Number(data.get("userId"))
+    console.log("User ID:", userId)
+    return {
+      otp: await generateOneTimePassword(userId),
+    }
   },
 }

@@ -35,13 +35,13 @@
                 <ul class='list-inside list-disc'>
             {#each reel.CollectorIDs?.split(',') ?? [] as collectorId, i}
                 <li>
-                    <a href='collectors?id={collectorId}'>{collectorId + ' ' + reel.CollectorNames?.split(',')[i]}</a>
+                    <a class='text-blue-800' href='collectors?id={collectorId}'>{collectorId + ' ' + reel.CollectorNames?.split(',')[i]}</a>
                 </li>
             {/each}
                 </ul>
             </li>
         </ul>
-        <a href="tracks?reelId={reel.ID}">{$_('tracks')}</a>
+        <a class='text-blue-800' href="tracks?reelId={reel.ID}">{$_('tracks')}</a>
         </div>
     </SummaryBox>
 {/each}

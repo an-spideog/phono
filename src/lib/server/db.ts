@@ -34,6 +34,29 @@ const ABSOLUTE_ADDRESS = "localhost:5173"
 
 const pool = await sql.connect(settings)
 
+// This will be called on initialisation to provide lists
+// to use in search menus
+export async function getStaticData() {
+  const ps = new sql.PreparedStatement(pool)
+  await ps.prepare(`
+    SELECT ID, FullText as Title
+    FROM tblCollectorsNoXml2;
+    
+    SELECT ID, FullName as Title
+    FROM tblSpeakersNoXml5;
+
+    SELECT ID, Title
+    FROM tblReelsNoXml;
+
+    SELECT ID, Nickname
+    FROM tblTracksNoXml2;
+  `)
+  let executed = await ps.execute({})
+  await ps.unprepare
+  return executed.recordsets
+}
+
+/*---- Admin Functions ----*/
 export async function generateOneTimePassword(userId: number) {
   const otp = uuid()
 
@@ -47,77 +70,7 @@ export async function generateOneTimePassword(userId: number) {
   `)
   let request = await ps.execute({ userId, otp })
   await ps.unprepare()
-}
-
-export async function checkIfOTPExists(otp: string) {
-  const ps = new sql.PreparedStatement(pool)
-  ps.input("otp", sql.NVarChar(sql.MAX))
-  await ps.prepare(`
-    SELECT Email FROM ${USER_TABLE}
-    WHERE OTP=@otp;
-  `)
-  let request = await ps.execute({ otp })
-  await ps.unprepare()
-  if (request.recordset.length) {
-    return request.recordset[0].Email
-  }
-}
-
-export async function setPasswordUsingOTP(newPassword: string, otp: string) {
-  console.log("function started")
-  const ps = new sql.PreparedStatement(pool)
-  ps.input("otp", sql.VarChar(sql.MAX))
-  ps.input("newPassword", sql.VarChar(sql.MAX))
-  console.log("inputs set")
-  await ps.prepare(`
-    UPDATE ${USER_TABLE}
-    SET PasswordHash=HASHBYTES('sha1', @newPassword), OTP=null, OTPGenerated=null
-    WHERE @otp=OTP AND DateDIFF(DAY, OTPGenerated, SYSDATETIME()) <= ${DAYS_FOR_OTP_TO_EXPIRE};
-  `)
-  console.log("request prepared")
-  let request = await ps.execute({ otp, newPassword })
-  console.log("request executed")
-  if (!request.rowsAffected[0]) {
-    console.log("Rows Affected", request.rowsAffected)
-    throw new Error(
-      "This link is incorrect or expired, please make sure you copied it correctly or request another one"
-    )
-  } else {
-    console.log("Rows Affected", request.rowsAffected)
-  }
-  await ps.unprepare()
-}
-
-export async function changePassword(
-  userId: number,
-  currentPassword: string,
-  newPassword: string
-) {
-  const ps = new sql.PreparedStatement(pool)
-  ps.input("userId", sql.Int)
-  ps.input("currentPassword", sql.VarChar(sql.MAX))
-  ps.input("newPassword", sql.VarChar(sql.MAX))
-  await ps.prepare(`
-    UPDATE ${USER_TABLE}
-    SET PasswordHash=HASHBYTES('sha1', @newPassword)
-    WHERE @userId=ID AND HASHBYTES('sha1', @currentPassword)=PasswordHash;
-  `)
-  let request = await ps.execute({ userId, currentPassword, newPassword })
-  console.log(
-    "\nuserID:",
-    userId,
-    "\ncurrentPassword:",
-    currentPassword,
-    "\nnewPassword:",
-    newPassword
-  )
-  if (!request.rowsAffected[0]) {
-    console.log("Rows Affected", request.rowsAffected)
-    throw new Error("incorrect password")
-  } else {
-    console.log("Rows Affected", request.rowsAffected)
-  }
-  await ps.unprepare()
+  return ABSOLUTE_ADDRESS + "/set-password?otp=" + otp
 }
 
 export async function renewTrackForUser(trackId: number, userId: number) {
@@ -231,28 +184,79 @@ export async function getUsers() {
   return executed.recordset
 }
 
-// This will be called on initialisation to provide lists
-// to use in search menus
-export async function getStaticData() {
+/*---- User Password Interactions ----*/
+export async function checkIfOTPExists(otp: string) {
   const ps = new sql.PreparedStatement(pool)
+  ps.input("otp", sql.NVarChar(sql.MAX))
   await ps.prepare(`
-    SELECT ID, FullText as Title
-    FROM tblCollectorsNoXml2;
-    
-    SELECT ID, FullName as Title
-    FROM tblSpeakersNoXml5;
-
-    SELECT ID, Title
-    FROM tblReelsNoXml;
-
-    SELECT ID, Nickname
-    FROM tblTracksNoXml2;
+    SELECT Email FROM ${USER_TABLE}
+    WHERE OTP=@otp;
   `)
-  let executed = await ps.execute({})
-  await ps.unprepare
-  return executed.recordsets
+  let request = await ps.execute({ otp })
+  await ps.unprepare()
+  if (request.recordset.length) {
+    return request.recordset[0].Email
+  }
 }
 
+export async function setPasswordUsingOTP(newPassword: string, otp: string) {
+  console.log("function started")
+  const ps = new sql.PreparedStatement(pool)
+  ps.input("otp", sql.VarChar(sql.MAX))
+  ps.input("newPassword", sql.VarChar(sql.MAX))
+  console.log("inputs set")
+  await ps.prepare(`
+    UPDATE ${USER_TABLE}
+    SET PasswordHash=HASHBYTES('sha1', @newPassword), OTP=null, OTPGenerated=null
+    WHERE @otp=OTP AND DateDIFF(DAY, OTPGenerated, SYSDATETIME()) <= ${DAYS_FOR_OTP_TO_EXPIRE};
+  `)
+  console.log("request prepared")
+  let request = await ps.execute({ otp, newPassword })
+  console.log("request executed")
+  if (!request.rowsAffected[0]) {
+    console.log("Rows Affected", request.rowsAffected)
+    throw new Error(
+      "This link is incorrect or expired, please make sure you copied it correctly or request another one"
+    )
+  } else {
+    console.log("Rows Affected", request.rowsAffected)
+  }
+  await ps.unprepare()
+}
+
+export async function changePassword(
+  userId: number,
+  currentPassword: string,
+  newPassword: string
+) {
+  const ps = new sql.PreparedStatement(pool)
+  ps.input("userId", sql.Int)
+  ps.input("currentPassword", sql.VarChar(sql.MAX))
+  ps.input("newPassword", sql.VarChar(sql.MAX))
+  await ps.prepare(`
+    UPDATE ${USER_TABLE}
+    SET PasswordHash=HASHBYTES('sha1', @newPassword)
+    WHERE @userId=ID AND HASHBYTES('sha1', @currentPassword)=PasswordHash;
+  `)
+  let request = await ps.execute({ userId, currentPassword, newPassword })
+  console.log(
+    "\nuserID:",
+    userId,
+    "\ncurrentPassword:",
+    currentPassword,
+    "\nnewPassword:",
+    newPassword
+  )
+  if (!request.rowsAffected[0]) {
+    console.log("Rows Affected", request.rowsAffected)
+    throw new Error("incorrect password")
+  } else {
+    console.log("Rows Affected", request.rowsAffected)
+  }
+  await ps.unprepare()
+}
+
+/*---- Logins ----*/
 export async function logout(sessionId: string) {
   const ps = new sql.PreparedStatement(pool)
   ps.input("sessionId", sql.NVarChar(sql.MAX))
@@ -319,6 +323,7 @@ export async function createSession(email: string) {
   return sessionId
 }
 
+/*---- Searches ----*/
 /* a Filter passed to the get function to narrow down the results shown */
 interface Filter {
   join: string // an SQL Join command
@@ -487,31 +492,6 @@ export async function getTracks(
         condition: "AND (@reelID IS NULL or tblTrackReel.ReelID=@reelID)",
       },
     ]
-  )
-}
-
-/* This function will be called and will include the sound data, 
-the other function will not include it - 
-they are currently the same because I do not have the sound files */
-export async function getTracksWithoutSound(
-  page: number,
-  text: string,
-  id: string,
-  collectorId: string,
-  speakerId: string,
-  placeId: string,
-  nickname: string,
-  reelId: string
-) {
-  return getTracks(
-    page,
-    text,
-    id,
-    collectorId,
-    speakerId,
-    placeId,
-    nickname,
-    reelId
   )
 }
 
