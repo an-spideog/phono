@@ -7,7 +7,7 @@
 </span>
 
 <style>
-    span {
+    /*span {
         font-size: var(--font-size);
-    }
+    }*/
 </style>

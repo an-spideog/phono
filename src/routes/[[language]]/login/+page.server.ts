@@ -4,7 +4,7 @@ import {
   logout,
   validateSession,
 } from "$lib/server/db.js"
-import { redirect } from "@sveltejs/kit"
+import { redirect, resolvePath } from "@sveltejs/kit"
 
 export async function load({ cookies }) {
   let sessionId = cookies.get("session")
@@ -30,12 +30,16 @@ export const actions = {
         secure: true,
         httpOnly: true,
       })
+      throw redirect(303, "account")
     } else {
+      return {
+        failed: true,
+      }
     }
   },
   logout: async ({ cookies }) => {
-    logout(cookies.get("session") ?? "")
+    await logout(cookies.get("session") ?? "")
     cookies.delete("session", { path: "/" })
-    throw redirect(302, "/en/introduction")
+    throw redirect(303, "introduction")
   },
 }

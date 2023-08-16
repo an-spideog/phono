@@ -2,10 +2,17 @@
     export let data;
     import NewButton from '$lib/components/NewButton.svelte'
     import { _ } from 'svelte-i18n';
+
+    export let form;
 </script>
 
 {#if !data.email}
 <h1>{$_('login')}</h1>
+{#if form?.failed}
+<div class='text-red-800'>
+    {$_('wrongUsernamePassword')}
+</div>
+{/if}
 <form method='POST' action='?/login' class='flex-row gap-2'>
     <label for=email class='block pb-2'>
         {$_('email')}: <input name='email'>

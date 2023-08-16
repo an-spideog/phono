@@ -3,6 +3,7 @@
   import Hoverable from "./Hoverable.svelte";
   import VStack from "./VStack.svelte";
   import HStack from "./HStack.svelte";
+  import { _ } from "svelte-i18n";
 
   export let user: User
 </script>
@@ -16,17 +17,17 @@
               {user.Email}
             </span>
             <span class=role>
-              {user.IsAdmin ? 'Riarthóir' : 'Úsáideoir'}
+              {user.IsAdmin ? $_('admin') : $_('user')}
             </span>
           </VStack>
 
           <VStack --width=fit-content>
             {#if user.IsAdmin}
-              gach traic
+              {$_('allTracks')}
             {:else if !user.TrackCount}
-              gan aon traic
+              {$_('noTracks')}
             {:else}
-            {user.TrackCount} traic
+            {user.TrackCount} {$_('trackCounter')}
             {/if}
           </VStack>
         </HStack>

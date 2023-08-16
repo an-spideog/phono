@@ -1,13 +1,9 @@
 <script lang="ts">
-  import type { Track, User } from "$lib/types"
-  import Button from "$lib/components/Button.svelte";
-  import AutoCompleteBox from "./AutoCompleteBox.svelte"
+    import type { Track, User } from "$lib/types"
+    import Button from "$lib/components/Button.svelte";
 
     export let user: User;
-    export let tracks: Track[];
     export let isOpen: boolean=false;
-    let selectedTrackIds: number[] = [];
-    let searchText = "";
 </script>
 
 {#if isOpen}

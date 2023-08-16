@@ -43,5 +43,32 @@
   "loggedInAs": "You are logged in as",
   "forgottenPassword": "Forgotten Password",
   "logOut": "Log out",
-  "admin": "Admin"
+  "admin": "Admin",
+  "account": "Account",
+  "user": "User",
+  "changePassword": "Change your password",
+  "yourTracks": "Your tracks",
+  "mustLogin": {
+    "1": "You must",
+    "2": "first"
+  },
+  "wrongUsernamePassword": "Your email or password is incorrect",
+  "users": "Users",
+  "new": "New",
+  "newUser": "New User",
+  "sendThisLink": "Send this link to the user to set their password",
+  "createUser": "Create user",
+  "allTracks": "All tracks",
+  "noTracks": "No tracks",
+  "trackCounter": "tracks",
+  "chooseTrack": "Choose tracks",
+  "addToUser": "Add to user",
+  "expiredTracks": "Expired Tracks",
+  "track": "Track",
+  "hasNoTracks": "This user has no tracks.",
+  "linkToResetPassword": "Link to reset password",
+  "until": "Until",
+  "expiredOn": "Expired on",
+  "renew": "Renew",
+  "revokePermissionNow": "Revoke permission now"
 }

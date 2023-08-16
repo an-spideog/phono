@@ -43,5 +43,31 @@
   "loggedInAs": "Tá tú logáilte isteach mar",
   "forgottenPassword": "Pasfhocal Dearmadta?",
   "logOut": "Logáil amach",
-  "admin": "Riarthóir"
+  "admin": "Riarthóir",
+  "user": "Úsáideoir",
+  "changePassword": "Athraigh do phasfhocal",
+  "yourTracks": "Do chuid traiceanna",
+  "mustLogin": {
+    "1": "Ní mór duit",
+    "2": "ar dtúis"
+  },
+  "wrongUsernamePassword": "Tá an ríomhphost nó an pasfhocal mícheart",
+  "users": "Úsáideoirí",
+  "new": "Nua",
+  "newUser": "Úsáideoir Nua",
+  "sendThisLink": "Cuir an nasc seo chun an úsáideora chun a phasfhocal a shocrú.",
+  "createUser": "Cruthaigh úsáideoir",
+  "allTracks": "gach traic",
+  "noTracks": "gan aon traic",
+  "trackCounter": "traic",
+  "chooseTrack": "Roghnaigh traiceanna",
+  "addToUser": "Cuir leis an úsáideoir",
+  "expiredTracks": "Traiceanna Caite",
+  "track": "Traic",
+  "hasNoTracks": "Níl aon traiceanna ag an úsáideoir seo.",
+  "linkToResetPassword": "Nasc chun pasfhocal a athshocrú",
+  "until": "Go dtí",
+  "expiredOn": "Caite ar",
+  "renew": "Athnuaigh",
+  "revokePermissionNow": "Bain cead anois"
 }
