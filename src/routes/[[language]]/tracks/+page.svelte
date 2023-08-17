@@ -40,7 +40,7 @@
 
 ]}/>
 
-<span>{$_('numberOfTracks')}: {trackCount}</span>
+<div class=my-2>{$_('numberOfTracks')}: {trackCount}</div>
 
 <Pager page={page} count={trackCount} />
 
@@ -81,8 +81,9 @@
             <li>{$_('reel')}: <a class='text-blue-800' href='reels?id={track.ReelID}'>{track.ReelID} {track.ReelTitle} </a></li>
         </ul>
         {#if  data.isAdmin || data.allowedTrackIds.includes(track.ID)}
-            <audio class='text-blue-800 rounded' controls src="https://www.logainm.ie/phono/PHONO/{findInitialID(track.Nickname)}mp3s/{track.Nickname}.mp3"></audio>
-        {:else}
+            <!--A custom audio element could be nice, but really a low priority-->
+            <audio class='w-full' controls src="https://www.logainm.ie/phono/PHONO/{findInitialID(track.Nickname)}mp3s/{track.Nickname}.mp3"></audio>
+        {:else if !email}
             {$_('soundFileAvailableTo')}
         {/if}
         </div>

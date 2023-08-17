@@ -1,10 +1,12 @@
 <script lang="ts">
     import type { Collector } from '$lib/types';
-    import SearchBox from '../../../lib/components/SearchBox.svelte';
     import { _ } from 'svelte-i18n';
+    import SearchBox from '../../../lib/components/SearchBox.svelte';
     import Pager from '../../../lib/components/Pager.svelte'
-  import SummaryBox from '../../../lib/components/SummaryBox.svelte'
+    import SummaryBox from '../../../lib/components/SummaryBox.svelte'
+
     export let data;
+
     let collectors: Collector[];
     $: collectors = data.jsons;
     $: pageNumber = data.page;
@@ -14,7 +16,7 @@
 <h1> {$_('collectors')} </h1>
 <SearchBox/>
 
-<span>{$_('numberOfCollectors')}: {collectorsCount}</span>
+<div class=my-2>{$_('numberOfCollectors')}: {collectorsCount}</div>
 
 <Pager page={pageNumber} count={collectorsCount}/>
 
@@ -32,9 +34,3 @@
 {/each}
 
 <Pager page={pageNumber} count={collectorsCount}/>
-
-<style>
-.summary-box {
-    border-bottom: 1px solid orangered;
-}
-</style>

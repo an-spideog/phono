@@ -14,7 +14,7 @@
 <h1> {$_('speakers')} </h1>
 <SearchBox/>
 
-<span>{$_('numberOfSpeakers')}: {speakerCount}</span>
+<div class=my-2>{$_('numberOfSpeakers')}: {speakerCount}</div>
 
 <Pager page={page} count={speakerCount} />
 

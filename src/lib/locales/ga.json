@@ -69,5 +69,16 @@
   "until": "Go dtí",
   "expiredOn": "Caite ar",
   "renew": "Athnuaigh",
-  "revokePermissionNow": "Bain cead anois"
+  "revokePermissionNow": "Bain cead anois",
+  "loginToChangePassword": {
+    "1": "Ní mór duit",
+    "2": "chun do phasfhocal a athrú."
+  },
+  "change": "Athraigh",
+  "passwordsDontMatch": "Ba cheart gurbh ionann an dá phasfhocal nua",
+  "newPassword": "Pasfhocal nua",
+  "newPasswordAgain": "Pasfhocal nua, arís",
+  "currentPassword": "Pasfhocal faoi láthair",
+  "passwordNotChanged": "Theip ar an athrú, ní raibh do phasfhocal ceart",
+  "passwordChanged": "D'athraíodh do phasfhocal"
 }

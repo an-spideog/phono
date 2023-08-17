@@ -39,7 +39,7 @@
             {$_('track')}
         </NewButton>
     </div>
-    <div class=track-list>
+    <div>
         {#if !data.userTracks.length}
             <div class='self-center text-center text-gray-600'>
                 {$_('hasNoTracks')}

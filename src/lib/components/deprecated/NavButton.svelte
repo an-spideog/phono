@@ -4,8 +4,8 @@
     import Icon from "$lib/components/Icon.svelte";
     import { _ } from "svelte-i18n";
     import HStack from "$lib/components/HStack.svelte"
-    import Hoverable from "$lib/components/Hoverable.svelte"
-    import VStack from "$lib/components/VStack.svelte"
+    import Hoverable from "$lib/components/deprecated/Hoverable.svelte"
+    import VStack from "$lib/components/deprecated/VStack.svelte"
 
     export let tab: string;
     export let text = "";

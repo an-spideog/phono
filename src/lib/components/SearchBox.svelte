@@ -1,5 +1,5 @@
 <script lang='ts'>
-    import Button from "$lib/components/Button.svelte"
+    import Button from "$lib/components/deprecated/Button.svelte"
     import { _ } from "svelte-i18n";
     import PopupSelect from "./PopupSelect.svelte"
 

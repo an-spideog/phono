@@ -12,8 +12,8 @@
 </script>
 
 <a href={resolvePath(`/[[language]]/${link}`, $page.params)} 
-    class='{isCompact ? 'flex-row' : 'flex'} justify-between gap-1 hover:bg-gray-100 p-4 rounded-full 
-    items-center text-2xl {$page.url.pathname.includes(link) ? 'text-blue-800 font-bold' : ''} text-center'>
+    class='{isCompact ? 'flex-row' : 'flex'} justify-between {isCompact ? '' : 'hover:bg-gray-100 p-2 rounded-full'} 
+    items-center text-2xl {$page.url.pathname.includes(link) ? 'text-blue-800 font-bold' : ''} md:text-xl lg:p-4 text-center'>
     <Icon name={icon}/>
     <div class={isCompact ? 'text-sm' : ''}>
         {text || $_(link)}

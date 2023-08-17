@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { Track, User } from "$lib/types"
-    import Button from "$lib/components/Button.svelte";
+    import Button from "$lib/components/deprecated/Button.svelte";
 
     export let user: User;
     export let isOpen: boolean=false;

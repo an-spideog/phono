@@ -1,8 +1,9 @@
 <script lang="ts">
-import type { PageData } from "./$types";
-
-    export let data: PageData;
+    export let data;
 </script>
+
+<!--For this page since it's mostly formatted text it's simpler to put both 
+    versions here in html-->
 {#if data.language === 'ga'}
 <h1>Cartlann Fuaime an Bhrainse Logainmneacha</h1>
 <p>

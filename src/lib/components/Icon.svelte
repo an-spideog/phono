@@ -5,9 +5,3 @@
 <span class=material-icons>
     {name}
 </span>
-
-<style>
-    /*span {
-        font-size: var(--font-size);
-    }*/
-</style>

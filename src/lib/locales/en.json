@@ -70,5 +70,16 @@
   "until": "Until",
   "expiredOn": "Expired on",
   "renew": "Renew",
-  "revokePermissionNow": "Revoke permission now"
+  "revokePermissionNow": "Revoke permission now",
+  "loginToChangePassword": {
+    "1": "You must",
+    "2": "to change your password."
+  },
+  "change": "Change",
+  "passwordsDontMatch": "The new passwords must match",
+  "newPasswordAgain": "New password, again",
+  "newPassword": "New password",
+  "currentPassword": "Current password",
+  "passwordChanged": "Your password was changed successfully",
+  "passwordNotChanged": "Your password wasn't changed, your current password was incorrect"
 }

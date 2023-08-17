@@ -8,11 +8,15 @@
     let targetPage = "";
     let pageCount: number;
     $: pageCount = Math.ceil(count / MAX_PER_PAGE)
+    $: isAtStart = (page === 1 )
+    $: isAtEnd = (page === pageCount)
 </script>
 
 <div class='flex shadow justify-around rounded'>
-    <a href='?page={page-1}' class='flex justify-center py-4 w-full border-r'>
-            <Icon name=chevron_left/>
+    <a href='?page={page-1 || 1}' class='{!isAtStart ? 'hover:bg-gray-100' : 'cursor-default bg-gray-200'} 
+        flex justify-center
+        py-4 w-full border-r'>
+        <Icon name=chevron_left/>
     </a>
 
     <div class='py-4 w-full flex justify-center'>
@@ -23,7 +27,9 @@
         }} bind:value={targetPage} size=2 placeholder={String(page)}>/{pageCount}
     </div>
 
-    <a href='?page={page+1}' class='flex justify-center py-4 w-full border-l '>
-            <Icon name=chevron_right/>
+    <a href='?page={(page == pageCount) ? page : page+1}' 
+        class='flex justify-center py-4 w-full border-l 
+            {!isAtEnd ? 'hover:bg-gray-100' : 'cursor-default bg-gray-200'}'>
+        <Icon name=chevron_right/>
     </a>
 </div>

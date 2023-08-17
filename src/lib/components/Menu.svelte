@@ -12,8 +12,8 @@
 </script>
 
 <div class='inline-block relative' use:clickOutside on:click_outside={() => {isOpen = false}}>
-        <!--Stop propogation here ensures that if the button is clicked, 
-            the click doesn't also get applied to the window-->
+    <!--Stop propogation here ensures that if the button is clicked, 
+        the click doesn't also get applied to the window-->
     <button class='hover:bg-gray-100 flex justify-center items-center' on:click|stopPropagation={() => isOpen = !isOpen}>
         <Icon name=more_horiz/>
     </button>

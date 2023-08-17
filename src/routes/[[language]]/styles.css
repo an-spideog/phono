@@ -62,5 +62,6 @@ h1 {
 }
 
 input {
-  border: 1px solid var(--on-surface);
+  border: 1px solid black;
+  @apply focus-visible:outline-blue-800 focus:outline rounded;
 }

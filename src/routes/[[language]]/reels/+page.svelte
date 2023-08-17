@@ -16,7 +16,7 @@
     {text: $_('collector'), name: 'collectorId', options: data.staticCollectors}
 ]}/>
 
-<span>{$_('numberOfReels')}: {reelCount}</span>
+<div class='my-2'>{$_('numberOfReels')}: {reelCount}</div>
 
 <Pager page={page} count={reelCount}/>
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import VStack from "$lib/components/VStack.svelte"
+    import VStack from "$lib/components/deprecated/VStack.svelte"
     import NavButton from "./NavButton.svelte"
 
     export let isAdmin: boolean;

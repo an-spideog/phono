@@ -1,6 +1,6 @@
 <script lang="ts">
-    import Button from "$lib/components/Button.svelte"
-    import VStack from "$lib/components/VStack.svelte"
+    import Button from "$lib/components/deprecated/Button.svelte"
+    import VStack from "$lib/components/deprecated/VStack.svelte"
 
     export let form
 

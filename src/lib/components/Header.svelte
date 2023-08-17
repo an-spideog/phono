@@ -1,10 +1,10 @@
 <script lang="ts">
-    import Button from "./Button.svelte"
+    import Button from "./deprecated/Button.svelte"
     import Icon from "./Icon.svelte";
     import { page } from "$app/stores";
     import { resolvePath } from "@sveltejs/kit";
   import NavButton from "../../routes/[[language]]/NavButton.svelte"
-  import Hoverable from "./Hoverable.svelte"
+  import Hoverable from "./deprecated/Hoverable.svelte"
 </script>
 
 <header>
